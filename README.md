@@ -6,6 +6,8 @@ PC端自用日常任务清理助手：DoroHelper
 
 最近看大家都在吐槽NIKKE加载读条慢，就加了个GUI分享一下。
 
+![image](https://github.com/kyokakawaii/DoroHelper/blob/main/preview.png)
+
 
 ### 叠甲：
 
