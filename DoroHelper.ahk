@@ -1060,6 +1060,8 @@ SimulationRoom()
             }
 
             Sleep 1500 ;kkk
+            if sleepTime <= 1000
+                Sleep 750
 
             ;点击不选择
             deltaY := 0
@@ -1111,6 +1113,8 @@ SimulationRoom()
         }
         else {
             Sleep 1500 ;kkk
+            if sleepTime <= 1000
+                Sleep 750
 
             stdCkptX := [1636, 2053]
             stdCkptY := [1991, 1991]
@@ -1223,6 +1227,8 @@ SimulationRoom()
     }
 
     Sleep 1500 ;kkk
+    if sleepTime <= 1000
+        Sleep 750
 
     stdCkptX := [1648]
     stdCkptY := [1995]
@@ -2177,6 +2183,8 @@ ClickOnDoro(*)
 
     if isBoughtTrash == 0 
         MsgBox "协同作战商店似乎已经刷新了，快去看看吧"
+
+    MsgBox "Doro完成任务！"
 
     ExitApp
 }
