@@ -512,6 +512,9 @@ FreeShop(numOfBook)
         }
     }
 
+    if sleepTime < 1500
+        Sleep 500
+
     global isBoughtTrash
 
     stdCkptX := [349]
@@ -545,6 +548,9 @@ FreeShop(numOfBook)
                 ExitApp
             }
         }
+
+        if sleepTime < 1500
+            Sleep 500
     }
 
     if numOfBook >= 1 {
