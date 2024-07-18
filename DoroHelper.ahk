@@ -200,8 +200,8 @@ OutpostDefence()
 CashShop()
 {
     ;进入商店
-    stdTargetX := 1132
-    stdTargetY := 1338
+    stdTargetX := 1163
+    stdTargetY := 1354
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
@@ -346,8 +346,8 @@ CashShop()
 FreeShop(numOfBook)
 {
     ;进入商店
-    stdTargetX := 1128
-    stdTargetY := 1478
+    stdTargetX := 1193
+    stdTargetY := 1487
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
@@ -592,6 +592,10 @@ FreeShop(numOfBook)
             while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
                 UserClick(stdTargetX, stdTargetY, scrRatio)
                 Sleep sleepTime // 2
+                if A_Index >= 2 {
+                    stdTargetX := 2067
+                    stdTargetY := 1970
+                }
                 if A_Index > waitTolerance {
                     MsgBox "第一本书购买异常！"
                     ExitApp
@@ -638,6 +642,10 @@ FreeShop(numOfBook)
             while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
                 UserClick(stdTargetX, stdTargetY, scrRatio)
                 Sleep sleepTime // 2
+                if A_Index >= 2 {
+                    stdTargetX := 2067
+                    stdTargetY := 1970
+                }
                 if A_Index > waitTolerance {
                     MsgBox "第二本书购买异常！"
                     ExitApp
@@ -684,6 +692,10 @@ FreeShop(numOfBook)
             while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
                 UserClick(stdTargetX, stdTargetY, scrRatio)
                 Sleep sleepTime // 2
+                if A_Index >= 2 {
+                    stdTargetX := 2067
+                    stdTargetY := 1970
+                }
                 if A_Index > waitTolerance {
                     MsgBox "第三本书购买异常！"
                     ExitApp
