@@ -1487,6 +1487,9 @@ RookieArena(times)
     }
 
     ;收pjjc菜
+    if sleepTime < 1500
+        Sleep 1000
+
     stdTargetX := 2278
     stdTargetY := 1092
     UserClick(stdTargetX, stdTargetY, scrRatio)
