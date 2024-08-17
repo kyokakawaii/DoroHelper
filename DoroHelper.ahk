@@ -2,7 +2,7 @@
 
 
 ;操作间隔（单位：毫秒）
-sleepTime := 1500
+sleepTime := 1000
 scrRatio := 1.0
 
 
@@ -78,10 +78,33 @@ Login()
 }
 
 
+BackToHall()
+{
+    stdTargetX := 333
+    stdTargetY := 2041
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep sleepTime
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "退回大厅失败！"
+            ExitApp
+        }
+    }
+}
+
+
 ;=============================================================
 ;1: 防御前哨基地奖励
 OutpostDefence()
 {
+    Start:
     stdTargetX := 1092
     stdTargetY := 1795
     UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -99,6 +122,11 @@ OutpostDefence()
         if A_Index > waitTolerance {
             MsgBox "进入防御前哨失败！"
             ExitApp
+        }
+
+        if A_Index > 10 {
+            BackToHall()
+            goto Start
         }
     }
 
@@ -118,6 +146,11 @@ OutpostDefence()
         if A_Index > waitTolerance {
             MsgBox "进入一举歼灭失败！"
             ExitApp
+        }
+
+        if A_Index > 10 {
+            BackToHall()
+            goto Start
         }
     }
 
@@ -141,6 +174,16 @@ OutpostDefence()
         while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
             UserClick(stdTargetX, stdTargetY, scrRatio)
             Sleep sleepTime
+
+            
+            if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
+                UserClick(2202, 1342, scrRatio)
+            }
+
+            if A_Index > 10 {
+                BackToHall()
+                goto Start
+            }
         }
 
         ;如果升级，把框点掉
@@ -153,6 +196,16 @@ OutpostDefence()
         while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
             UserClick(stdTargetX, stdTargetY, scrRatio)
             Sleep sleepTime
+
+            
+            if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
+                UserClick(2202, 1342, scrRatio)
+            }
+
+            if A_Index > 10 {
+                BackToHall()
+                goto Start
+            }
         }
     }
     else {
@@ -165,6 +218,16 @@ OutpostDefence()
         while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
             UserClick(stdTargetX, stdTargetY, scrRatio)
             Sleep sleepTime
+
+            
+            if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
+                UserClick(2202, 1342, scrRatio)
+            }
+
+            if A_Index > 10 {
+                BackToHall()
+                goto Start
+            }
         }
     }
 
@@ -186,7 +249,10 @@ OutpostDefence()
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
-        Sleep sleepTime // 2
+        Sleep sleepTime
+        if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
+            UserClick(2202, 1342, scrRatio)
+        }
         if A_Index > waitTolerance {
             MsgBox "前哨基地防御异常！"
             ExitApp
@@ -205,9 +271,9 @@ CashShop()
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    stdCkptX := [146, 199]
-    stdCkptY := [432, 439]
-    desiredColor := ["0x10C5F4", "0x3B3E41"]
+    stdCkptX := [158, 199]
+    stdCkptY := [525, 439]
+    desiredColor := ["0x0DC2F4", "0x3B3E41"]
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -218,14 +284,30 @@ CashShop()
         }
     }
 
+    delta := false
+
+    stdCkptX := [1093]
+    stdCkptY := [480]
+    desiredColor := ["0xD8D9DA"]
+
+    if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+        delta := true
+    
+
     stdTargetX := 256
+    if delta
+        stdTargetX := 432
     stdTargetY := 486
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
     stdCkptX := [194]
+    if delta
+        stdCkptX := [373]
     stdCkptY := [436]
     desiredColor := ["0x0FC7F5"]
+    if delta
+        desiredColor := ["0x0BC7F4"]
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -870,7 +952,7 @@ FriendPoint()
 
     while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
-        Sleep sleepTime // 2
+        Sleep sleepTime
         if A_Index > waitTolerance {
             MsgBox "进入好友界面失败！"
             ExitApp
@@ -885,7 +967,7 @@ FriendPoint()
 
     while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
-        Sleep sleepTime // 2
+        Sleep sleepTime
         if A_Index > waitTolerance {
             MsgBox "赠送好友点数失败"
             ExitApp
@@ -1207,19 +1289,40 @@ SimulationRoom()
                 stdTargetX := 1904
                 stdTargetY := 1900
                 UserClick(stdTargetX, stdTargetY, scrRatio)
-                Sleep sleepTime // 2
+                Sleep sleepTime
+
+                if sleepTime <= 1000
+                    Sleep 1000
 
                 ;点击确认
-                stdTargetX := 1908
-                stdTargetY := 2016
-                UserClick(stdTargetX, stdTargetY, scrRatio)
-                Sleep sleepTime // 2
-                UserClick(stdTargetX, stdTargetY, scrRatio)
-                Sleep sleepTime // 2
-                UserClick(stdTargetX, stdTargetY, scrRatio)
-                Sleep sleepTime // 2
-                UserClick(stdTargetX, stdTargetY, scrRatio)
-                Sleep sleepTime
+                stdCkptX := [1858]
+                stdCkptY := [1572]
+                desiredColor := ["0x069FE3"]
+
+                if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                    stdTargetX := 1923
+                    stdTargetY := 1589
+                    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime
+                        if A_Index > waitTolerance {
+                            MsgBox "确认失败！"
+                            ExitApp
+                        }
+                    }
+                }
+                else {
+                    stdTargetX := 1908
+                    stdTargetY := 2016
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime
+                }
             }
         }
     }
@@ -1532,12 +1635,36 @@ RookieArena(times)
     Sleep sleepTime
 
     stdCkptX := [784]
-    stdCkptY := [1112]
+    stdCkptY := [1201]
     desiredColor := ["0xF8FCFE"]
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
+
+        if A_Index > 5 {
+            ;退回大厅
+            stdTargetX := 333
+            stdTargetY := 2041
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+
+            stdCkptX := [64]
+            stdCkptY := [470]
+            desiredColor := ["0xFAA72C"]
+
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                UserClick(stdTargetX, stdTargetY, scrRatio)
+                Sleep sleepTime
+                if A_Index > waitTolerance {
+                    MsgBox "退回大厅失败！"
+                    ExitApp
+                }
+            }
+
+            return
+        }
+        
         if A_Index > waitTolerance {
             MsgBox "进入新人竞技场失败！"
             ExitApp
@@ -2234,7 +2361,7 @@ isBoughtTrash := 1
 ;创建gui
 doroGui := Gui(, "Doro小帮手")
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
-doroGui.Add("DropDownList", "Choose4", [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
+doroGui.Add("DropDownList", "Choose2", [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("GroupBox", "w300 h320 YP+40", "想让Doro帮你做什么呢？")
 doroGui.Add("Checkbox", "Checked XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", "Checked", "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
