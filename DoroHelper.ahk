@@ -9,7 +9,7 @@ scrRatio := 1.0
 ;consts
 stdScreenW := 3840
 stdScreenH := 2160
-waitTolerance := 25
+waitTolerance := 50
 colorTolerance := 15
 
 
