@@ -872,6 +872,8 @@ Expedition()
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
+    Sleep 2000
+
     ;全部派遣
     stdCkptX := [1869, 1977]
     stdCkptY := [1777, 1847]
