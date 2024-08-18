@@ -2,7 +2,7 @@
 
 
 ;操作间隔（单位：毫秒）
-sleepTime := 1000
+sleepTime := 1500
 scrRatio := 1.0
 
 
@@ -2363,7 +2363,7 @@ isBoughtTrash := 1
 ;创建gui
 doroGui := Gui(, "Doro小帮手")
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
-doroGui.Add("DropDownList", "Choose2", [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
+doroGui.Add("DropDownList", "Choose4", [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("GroupBox", "w300 h320 YP+40", "想让Doro帮你做什么呢？")
 doroGui.Add("Checkbox", "Checked XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", "Checked", "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
