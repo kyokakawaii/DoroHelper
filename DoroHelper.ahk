@@ -1,6 +1,10 @@
 ﻿#Requires AutoHotkey >=v2.0
 
 
+CoordMode "Pixel", "Client"
+CoordMode "Mouse", "Client"
+
+
 ;操作间隔（单位：毫秒）
 sleepTime := 1500
 scrRatio := 1.0
@@ -872,7 +876,7 @@ Expedition()
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    Sleep 2000
+    Sleep 3000
 
     ;全部派遣
     stdCkptX := [1869, 1977]
@@ -2290,7 +2294,7 @@ ChangeOnSleepTime(GUICtrl, *)
 
 ClickOnDoro(*)
 {
-    WinGetPos ,, &userScreenW, &userScreenH, "NIKKE"
+    WinGetClientPos ,, &userScreenW, &userScreenH, "NIKKE"
     global scrRatio
     scrRatio := userScreenW / stdScreenW
 
