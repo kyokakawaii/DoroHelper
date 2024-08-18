@@ -281,7 +281,7 @@ CashShop()
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
-        Sleep sleepTime // 2
+        Sleep sleepTime
         if A_Index > waitTolerance {
             MsgBox "进入付费商店失败！"
             ExitApp
@@ -1467,6 +1467,10 @@ SimulationRoom()
         }
     }
 
+    if colorTolerance != 15 {
+        Sleep 5000
+    }
+
     ;点击模拟结束
     stdTargetX := 1923
     stdTargetY := 1276
@@ -2292,6 +2296,16 @@ ChangeOnSleepTime(GUICtrl, *)
     }
 }
 
+ChangeOnColorTolerance(GUICtrl, *)
+{
+    global colorTolerance
+    switch GUICtrl.Value {
+        case 1: colorTolerance := 15
+        case 2: colorTolerance := 35
+        default: colorTolerance := 15
+    }
+}
+
 ClickOnHelp(*)
 {
     msgbox "
@@ -2406,6 +2420,9 @@ isBoughtTrash := 1
 ^1::{
     MsgBox isCheckedOutposeDefence " " isCheckedCashShop " " isCheckedFreeShop " " isCheckedExpedtion " " isCheckedFriendPoint " " isCheckedSimulationRoom " " isCheckedRookieArena " " isCheckedLoveTalking " " isCheckedTribeTower
 }
+^2::{
+    MsgBox colorTolerance
+}
 */
 
 ;创建gui
@@ -2413,6 +2430,8 @@ doroGui := Gui(, "Doro小帮手")
 doroGui.Add("Button", "Default w80", "帮助").OnEvent("Click", ClickOnHelp)
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose4", [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
+doroGui.Add("Text",, "色差容忍度，能跑就别改")
+doroGui.Add("DropDownList", "Choose1", ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
 doroGui.Add("GroupBox", "w300 h320 YP+40", "想让Doro帮你做什么呢？")
 doroGui.Add("Checkbox", "Checked XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", "Checked", "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
