@@ -2294,6 +2294,11 @@ ChangeOnSleepTime(GUICtrl, *)
 
 ClickOnDoro(*)
 {
+    if !A_IsAdmin {
+        MsgBox "请以管理员身份运行Doro"
+        ExitApp
+    }
+
     WinGetClientPos ,, &userScreenW, &userScreenH, "NIKKE"
     global scrRatio
     scrRatio := userScreenW / stdScreenW
