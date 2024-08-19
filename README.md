@@ -18,7 +18,7 @@ PC端自用日常任务清理助手：DoroHelper
 
 在右边的release里有我编译好的exe文件可以直接用。
 
-不放心的话也可以下载代码，安装AutoHoykey V2.0并以管理员模式运行`DoroHelper.ahk`。也可以用任意文本编辑器打开`DoroHelper.ahk`修改（史山）代码以适配自己的情况。
+不放心的话也可以下载代码，安装AutoHotkey V2.0并以管理员模式运行`DoroHelper.ahk`。也可以用任意文本编辑器打开`DoroHelper.ahk`修改（史山）代码以适配自己的情况。
 
 也可以使用Ahk2Exe编译`DoroHelper.ahk`自己生成exe可执行文件。
 
