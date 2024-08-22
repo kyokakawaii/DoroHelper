@@ -870,9 +870,9 @@ Expedition()
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime // 2
     UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime // 2
+    Sleep sleepTime
     UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime // 2
+    Sleep sleepTime
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
@@ -1683,14 +1683,14 @@ RookieArena(times)
 
     loop times {
         ;点击进入战斗
-        stdTargetX := 2320
-        stdTargetY := 1661
+        stdTargetX := 2371
+        stdTargetY := 1847
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
 
-        stdCkptX := [2267]
-        stdCkptY := [1593]
-        desiredColor := ["0x16B0F5"]
+        stdCkptX := [2700]
+        stdCkptY := [1691]
+        desiredColor := ["0xF7FCFE"]
 
         while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
             UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -2188,6 +2188,7 @@ EnterInterception()
     }
 
     ;进入特殊拦截战
+    /*
     stdTargetX := 2059
     stdTargetY := 1689
     UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -2205,6 +2206,7 @@ EnterInterception()
             ExitApp
         }
     }
+    */
 }
 
 
