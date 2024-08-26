@@ -790,6 +790,54 @@ FreeShop(numOfBook)
         }
     }
 
+    if isCheckedCompanyWeapon {
+        stdCkptX := [2011]
+        stdCkptY := [1213]
+        desiredColor := ["0xD65E46"]
+        
+        if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            stdTargetX := 2017
+            stdTargetY := 1485
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+
+            stdCkptX := [2067]
+            stdCkptY := [1770]
+            desiredColor := ["0x07A0E4"]
+
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                UserClick(stdTargetX, stdTargetY, scrRatio)
+                Sleep sleepTime // 2
+                if A_Index > waitTolerance {
+                    MsgBox "公司武器熔炉购买异常！"
+                    ExitApp
+                }
+            }
+
+            stdTargetX := 2067
+            stdTargetY := 1770
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+
+            stdCkptX := [134]
+            stdCkptY := [1316]
+            desiredColor := ["0xFA9318"]
+
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                UserClick(stdTargetX, stdTargetY, scrRatio)
+                Sleep sleepTime // 2
+                if A_Index >= 2 {
+                    stdTargetX := 2067
+                    stdTargetY := 1970
+                }
+                if A_Index > waitTolerance {
+                    MsgBox "公司武器熔炉购买异常！"
+                    ExitApp
+                }
+            }
+        }
+    }
+
     stdTargetX := 333
     stdTargetY := 2041
     UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -2266,6 +2314,12 @@ ClickOnTribeTower(*)
     isCheckedTribeTower := 1 - isCheckedTribeTower
 }
 
+ClickOnCompanyWeapon(*)
+{
+    global isCheckedCompanyWeapon
+    isCheckedCompanyWeapon := 1 - isCheckedCompanyWeapon
+}
+
 ChangeOnNumOfBook(GUICtrl, *)
 {
     global numOfBook
@@ -2413,6 +2467,7 @@ isCheckedSimulationRoom := 1
 isCheckedRookieArena := 1
 isCheckedLoveTalking := 1
 isCheckedTribeTower := 1
+isCheckedCompanyWeapon := 1
 numOfBook := 3
 numOfBattle := 5
 numOfLoveTalking := 10
@@ -2434,12 +2489,13 @@ doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose4", [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
 doroGui.Add("DropDownList", "Choose1", ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
-doroGui.Add("GroupBox", "w300 h320 YP+40", "想让Doro帮你做什么呢？")
+doroGui.Add("GroupBox", "w300 h340 YP+40", "想让Doro帮你做什么呢？")
 doroGui.Add("Checkbox", "Checked XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", "Checked", "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
 doroGui.Add("Checkbox", "Checked", "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
 doroGui.Add("Text",, "购买几本属性书？")
 doroGui.Add("DropDownList", "Choose4", [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
+doroGui.Add("Checkbox", "Checked", "普通商店购买公司武器熔炉").OnEvent("Click", ClickOnCompanyWeapon)
 doroGui.Add("Checkbox", "Checked", "派遣远征").OnEvent("Click", ClickOnExpedition)
 doroGui.Add("Checkbox", "Checked", "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
 doroGui.Add("Checkbox", "Checked", "模拟室5C(普通关卡需要快速战斗)").OnEvent("Click", ClickOnSimulationRoom)
