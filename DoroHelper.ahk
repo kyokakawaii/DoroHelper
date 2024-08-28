@@ -1,5 +1,7 @@
 ﻿#Requires AutoHotkey >=v2.0
 
+#Include %A_ScriptDir%\lib\github.ahk
+
 
 CoordMode "Pixel", "Client"
 CoordMode "Mouse", "Client"
@@ -15,6 +17,10 @@ stdScreenW := 3840
 stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
+
+currentVersion := "v0.1.3"
+usr := "kyokakawaii"
+repo := "DoroHelper"
 
 
 ;utilities
@@ -36,6 +42,38 @@ IsSimilarColor(targetColor, color)
         return true
 
     return false
+}
+
+
+ClickOnCheckForUpdate(*)
+{
+    latestObj := Github.latest(usr, repo)
+    if currentVersion != latestObj.version
+    {
+        userResponse := MsgBox(
+            "DoroHelper存在更新版本:`n"
+            "`nVersion: " latestObj.version
+            "`nNotes:`n" 
+            . latestObj.change_notes  
+            "`n`n是否下载?",, '36')
+
+        if (userResponse = "Yes") {
+            try {
+                Github.Download(latestObj.downloadURLs[1], A_ScriptDir "\DoroDownload")
+            }
+            catch as err {
+                MsgBox "下载失败，请检查网络。"
+            } 
+            else {
+                FileMove "DoroDownload.exe", "DoroHelper-" latestObj.version ".exe"
+                MsgBox "已下载至当前目录。"
+                ExitApp
+            }
+        }
+    } 
+    else {
+        MsgBox "当前客户端已是最新版本。"
+    }
 }
 
 
@@ -949,6 +987,9 @@ Expedition()
                 MsgBox "全部派遣失败！"
                 ExitApp
             }
+
+            if UserCheckColor([1779], [1778], ["0xCFCFCF"], scrRatio)
+                break
         }
 
         stdTargetX := 2073
@@ -1393,8 +1434,21 @@ SimulationRoom()
                         }
                     }
 
-                    if !flag 
+                    if !flag {
+                        /*
+                        stdTargetX := 1908
+                        stdTargetY := 2016
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime // 2
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime // 2
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime // 2
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime
+                        */
                         continue
+                    }
 
                     ;MsgBox "点不选择"
                     stdTargetX := 2185
@@ -1422,6 +1476,17 @@ SimulationRoom()
                             ExitApp
                         }
                     }
+
+                    stdTargetX := 1908
+                    stdTargetY := 2016
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime
                 }
             }
         }
@@ -2449,6 +2514,8 @@ ClickOnHelp(*)
 
 ClickOnDoro(*)
 {
+    WriteSettings()
+
     if !A_IsAdmin {
         MsgBox "请以管理员身份运行Doro"
         ExitApp
@@ -2511,6 +2578,105 @@ ClickOnDoro(*)
 }
 
 
+SleepTimeToLabel(sleepTime)
+{
+    return String(sleepTime / 250 - 2)
+}
+
+
+ColorToleranceToLabel(colorTolerance)
+{
+    switch colorTolerance {
+        case 15: return "1"
+        case 35: return "2"
+        default:
+            return "1"
+    }
+}
+
+
+IsCheckedToString(foo)
+{
+    if foo
+        return "Checked"
+    else
+        return ""
+}
+
+
+NumOfBookToLabel(n)
+{
+    return String(n + 1)
+}
+
+
+NumOfBattleToLabel(n)
+{
+    return String(n - 1)
+}
+
+NumOfLoveTalkingToLabel(n)
+{
+    return String(n)
+}
+
+
+WriteSettings()
+{
+    IniWrite(sleepTime, "settings.ini", "section1", "sleepTime")
+    IniWrite(colorTolerance, "settings.ini", "section1", "colorTolerance")
+    IniWrite(isCheckedOutposeDefence, "settings.ini", "section1", "isCheckedOutposeDefence")
+    IniWrite(isCheckedCashShop, "settings.ini", "section1", "isCheckedCashShop")
+    IniWrite(isCheckedFreeShop, "settings.ini", "section1", "isCheckedFreeShop")
+    IniWrite(isCheckedExpedtion, "settings.ini", "section1", "isCheckedExpedtion")
+    IniWrite(isCheckedFriendPoint, "settings.ini", "section1", "isCheckedFriendPoint")
+    IniWrite(isCheckedSimulationRoom, "settings.ini", "section1", "isCheckedSimulationRoom")
+    IniWrite(isCheckedRookieArena, "settings.ini", "section1", "isCheckedRookieArena")
+    IniWrite(isCheckedLoveTalking, "settings.ini", "section1", "isCheckedLoveTalking")
+    IniWrite(isCheckedTribeTower, "settings.ini", "section1", "isCheckedTribeTower")
+    IniWrite(isCheckedCompanyWeapon, "settings.ini", "section1", "isCheckedCompanyWeapon")
+    IniWrite(numOfBook, "settings.ini", "section1", "numOfBook")
+    IniWrite(numOfBattle, "settings.ini", "section1", "numOfBattle")
+    IniWrite(numOfLoveTalking, "settings.ini", "section1", "numOfLoveTalking")
+}
+
+
+LoadSettings()
+{
+    global sleepTime
+    global colorTolerance
+    global isCheckedOutposeDefence
+    global isCheckedCashShop
+    global isCheckedFreeShop
+    global isCheckedExpedtion
+    global isCheckedFriendPoint
+    global isCheckedSimulationRoom
+    global isCheckedRookieArena
+    global isCheckedLoveTalking
+    global isCheckedTribeTower
+    global isCheckedCompanyWeapon
+    global numOfBook
+    global numOfBattle
+    global numOfLoveTalking
+
+    sleepTime := IniRead("settings.ini", "section1", "sleepTime")
+    colorTolerance := IniRead("settings.ini", "section1", "colorTolerance")
+    isCheckedOutposeDefence := IniRead("settings.ini", "section1", "isCheckedOutposeDefence")
+    isCheckedCashShop := IniRead("settings.ini", "section1", "isCheckedCashShop")
+    isCheckedFreeShop := IniRead("settings.ini", "section1", "isCheckedFreeShop")
+    isCheckedExpedtion := IniRead("settings.ini", "section1", "isCheckedExpedtion")
+    isCheckedFriendPoint := IniRead("settings.ini", "section1", "isCheckedFriendPoint")
+    isCheckedSimulationRoom := IniRead("settings.ini", "section1", "isCheckedSimulationRoom")
+    isCheckedRookieArena := IniRead("settings.ini", "section1", "isCheckedRookieArena")
+    isCheckedLoveTalking := IniRead("settings.ini", "section1", "isCheckedLoveTalking")
+    isCheckedTribeTower := IniRead("settings.ini", "section1", "isCheckedTribeTower")
+    isCheckedCompanyWeapon := IniRead("settings.ini", "section1", "isCheckedCompanyWeapon")
+    numOfBook := IniRead("settings.ini", "section1", "numOfBook")
+    numOfBattle := IniRead("settings.ini", "section1", "numOfBattle")
+    numOfLoveTalking := IniRead("settings.ini", "section1", "numOfLoveTalking")
+}
+
+
 isCheckedOutposeDefence := 1
 isCheckedCashShop := 1
 isCheckedFreeShop := 1
@@ -2535,30 +2701,43 @@ isBoughtTrash := 1
 }
 */
 
+
+;读取设置
+SetWorkingDir A_ScriptDir
+if not FileExist("settings.ini") {
+    ;MsgBox "write"
+    WriteSettings()
+} else {
+    ;MsgBox "load"
+    LoadSettings()
+}
+
+
 ;创建gui
-doroGui := Gui(, "Doro小帮手")
+doroGui := Gui(, "Doro小帮手" currentVersion)
 doroGui.Add("Button", "Default w80", "帮助").OnEvent("Click", ClickOnHelp)
+doroGui.Add("Button", "Default w80", "检查更新").OnEvent("Click", ClickOnCheckForUpdate)
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
-doroGui.Add("DropDownList", "Choose4", [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
+doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
-doroGui.Add("DropDownList", "Choose1", ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
+doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
 doroGui.Add("GroupBox", "w300 h340 YP+40", "想让Doro帮你做什么呢？")
-doroGui.Add("Checkbox", "Checked XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
-doroGui.Add("Checkbox", "Checked", "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
-doroGui.Add("Checkbox", "Checked", "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedCashShop), "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop), "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
 doroGui.Add("Text",, "购买几本属性书？")
-doroGui.Add("DropDownList", "Choose4", [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
-doroGui.Add("Checkbox", "Checked", "普通商店购买公司武器熔炉").OnEvent("Click", ClickOnCompanyWeapon)
-doroGui.Add("Checkbox", "Checked", "派遣远征").OnEvent("Click", ClickOnExpedition)
-doroGui.Add("Checkbox", "Checked", "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
-doroGui.Add("Checkbox", "Checked", "模拟室5C(普通关卡需要快速战斗)").OnEvent("Click", ClickOnSimulationRoom)
-doroGui.Add("Checkbox", "Checked", "新人竞技场n次(请点开快速战斗)").OnEvent("Click", ClickOnRookieArena)
+doroGui.Add("DropDownList", "Choose" NumOfBookToLabel(numOfBook), [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyWeapon), "普通商店购买公司武器熔炉").OnEvent("Click", ClickOnCompanyWeapon)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedExpedtion), "派遣远征").OnEvent("Click", ClickOnExpedition)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedFriendPoint), "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedSimulationRoom), "模拟室5C(普通关卡需要快速战斗)").OnEvent("Click", ClickOnSimulationRoom)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedRookieArena), "新人竞技场n次(请点开快速战斗)").OnEvent("Click", ClickOnRookieArena)
 doroGui.Add("Text",, "新人竞技场打几次？")
-doroGui.Add("DropDownList", "Choose4", [2, 3, 4, 5]).OnEvent("Change", ChangeOnNumOfBattle)
-doroGui.Add("Checkbox", "Checked", "咨询n位妮姬(可以通过收藏改变妮姬排序)").OnEvent("Click", ClickOnLoveTalking)
+doroGui.Add("DropDownList", "Choose" NumOfBattleToLabel(numOfBattle), [2, 3, 4, 5]).OnEvent("Change", ChangeOnNumOfBattle)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedLoveTalking), "咨询n位妮姬(可以通过收藏改变妮姬排序)").OnEvent("Click", ClickOnLoveTalking)
 doroGui.Add("Text",, "咨询几位妮姬？")
-doroGui.Add("DropDownList", "Choose10", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).OnEvent("Change", ChangeOnNumOfLoveTalking)
-doroGui.Add("Checkbox", "Checked", "爬塔1次(蹭每日任务)").OnEvent("Click", ClickOnTribeTower)
+doroGui.Add("DropDownList", "Choose" NumOfLoveTalkingToLabel(numOfLoveTalking), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).OnEvent("Change", ChangeOnNumOfLoveTalking)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedTribeTower), "爬塔1次(蹭每日任务)").OnEvent("Click", ClickOnTribeTower)
 doroGui.Add("Button", "Default w80 XP+100 YP+40", "DORO!").OnEvent("Click", ClickOnDoro)
 doroGui.Show()
 
