@@ -1376,6 +1376,52 @@ SimulationRoom()
                     Sleep sleepTime // 2
                     UserClick(stdTargetX, stdTargetY, scrRatio)
                     Sleep sleepTime
+
+                    ;不替换buff
+                    ;点击不选择和确定
+                    tX := 2104
+                    tY := 1656
+                    desiredColor := ["0x089FE4"]
+
+                    flag := true
+
+                    while !UserCheckColor([tX], [tY], desiredColor, scrRatio) {
+                        tY := tY + 65
+                        if tY > 2160 {
+                            flag := false
+                            break
+                        }
+                    }
+
+                    if !flag 
+                        continue
+
+                    ;MsgBox "点不选择"
+                    stdTargetX := 2185
+                    stdTargetY := tY - 200
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+
+                    ;MsgBox "点击确定"
+                    stdTargetX := 2185
+                    stdTargetY := tY
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime
+
+                    stdCkptX := [2104]
+                    stdCkptY := [tY]
+                    desiredColor := ["0x089FE4"]
+
+                    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime
+                        if A_Index > waitTolerance {
+                            MsgBox "模拟室结束异常！"
+                            ExitApp
+                        }
+                    }
                 }
             }
         }
@@ -2408,11 +2454,18 @@ ClickOnDoro(*)
         ExitApp
     }
 
-    WinGetClientPos ,, &userScreenW, &userScreenH, "NIKKE"
+    title := "NIKKE"
+    try {
+        WinGetClientPos ,, &userScreenW, &userScreenH, "NIKKE"
+    } catch as err {
+        title := "勝利女神：妮姬"
+    }
+
+    WinGetClientPos ,, &userScreenW, &userScreenH, title
     global scrRatio
     scrRatio := userScreenW / stdScreenW
 
-    nikkeID := WinWait("NIKKE")
+    nikkeID := WinWait(title)
     WinActivate nikkeID
 
     Login()
