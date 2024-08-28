@@ -2521,11 +2521,11 @@ ClickOnDoro(*)
         ExitApp
     }
 
-    title := "NIKKE"
+    title := "勝利女神：妮姬"
     try {
-        WinGetClientPos ,, &userScreenW, &userScreenH, "NIKKE"
+        WinGetClientPos ,, &userScreenW, &userScreenH, "勝利女神：妮姬"
     } catch as err {
-        title := "勝利女神：妮姬"
+        title := "NIKKE"
     }
 
     WinGetClientPos ,, &userScreenW, &userScreenH, title
