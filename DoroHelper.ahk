@@ -654,7 +654,7 @@ FreeShop(numOfBook)
 
 
     ;如果需要，则购买竞技场商店前三本书
-    if numOfBook >= 1 {
+    if numOfBook >= 1 or isCheckedCompanyWeapon {
         stdTargetX := 134
         stdTargetY := 1403
         UserClick(stdTargetX, stdTargetY, scrRatio)
