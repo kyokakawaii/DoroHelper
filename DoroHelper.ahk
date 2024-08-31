@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.3"
+currentVersion := "v0.1.4"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -72,7 +72,7 @@ ClickOnCheckForUpdate(*)
         }
     } 
     else {
-        MsgBox "当前客户端已是最新版本。"
+        MsgBox "当前Doro已是最新版本。"
     }
 }
 
@@ -320,6 +320,9 @@ CashShop()
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
+        if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
+            UserClick(2202, 1342, scrRatio)
+        }
         if A_Index > waitTolerance {
             MsgBox "进入付费商店失败！"
             ExitApp
