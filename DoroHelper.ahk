@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.4"
+currentVersion := "v0.1.5"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -318,6 +318,20 @@ CashShop()
     desiredColor := ["0x0DC2F4", "0x3B3E41"]
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        if UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+            UserClick(1789, 1387, scrRatio)
+            Sleep sleepTime
+            UserClick(1789, 1387, scrRatio)
+            Sleep sleepTime
+            UserClick(2144, 1656, scrRatio)
+            Sleep sleepTime
+            while UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+                UserClick(2144, 1656, scrRatio)
+                Sleep sleepTime
+            }
+            break
+        }
+
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
         if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
@@ -326,6 +340,20 @@ CashShop()
         if A_Index > waitTolerance {
             MsgBox "进入付费商店失败！"
             ExitApp
+        }
+    }
+
+    Sleep sleepTime
+    if UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+        UserClick(1789, 1387, scrRatio)
+        Sleep sleepTime
+        UserClick(1789, 1387, scrRatio)
+        Sleep sleepTime
+        UserClick(2144, 1656, scrRatio)
+        Sleep sleepTime
+        while UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+            UserClick(2144, 1656, scrRatio)
+            Sleep sleepTime
         }
     }
 
