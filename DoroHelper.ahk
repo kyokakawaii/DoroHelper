@@ -1,8 +1,14 @@
 ﻿#Requires AutoHotkey >=v2.0
 
+#Include %A_ScriptDir%\lib\github.ahk
+
+
+CoordMode "Pixel", "Client"
+CoordMode "Mouse", "Client"
+
 
 ;操作间隔（单位：毫秒）
-sleepTime := 1000
+sleepTime := 1500
 scrRatio := 1.0
 
 
@@ -11,6 +17,10 @@ stdScreenW := 3840
 stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
+
+currentVersion := "v0.1.5"
+usr := "kyokakawaii"
+repo := "DoroHelper"
 
 
 ;utilities
@@ -32,6 +42,38 @@ IsSimilarColor(targetColor, color)
         return true
 
     return false
+}
+
+
+ClickOnCheckForUpdate(*)
+{
+    latestObj := Github.latest(usr, repo)
+    if currentVersion != latestObj.version
+    {
+        userResponse := MsgBox(
+            "DoroHelper存在更新版本:`n"
+            "`nVersion: " latestObj.version
+            "`nNotes:`n" 
+            . latestObj.change_notes  
+            "`n`n是否下载?",, '36')
+
+        if (userResponse = "Yes") {
+            try {
+                Github.Download(latestObj.downloadURLs[1], A_ScriptDir "\DoroDownload")
+            }
+            catch as err {
+                MsgBox "下载失败，请检查网络。"
+            } 
+            else {
+                FileMove "DoroDownload.exe", "DoroHelper-" latestObj.version ".exe"
+                MsgBox "已下载至当前目录。"
+                ExitApp
+            }
+        }
+    } 
+    else {
+        MsgBox "当前Doro已是最新版本。"
+    }
 }
 
 
@@ -276,11 +318,42 @@ CashShop()
     desiredColor := ["0x0DC2F4", "0x3B3E41"]
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        if UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+            UserClick(1789, 1387, scrRatio)
+            Sleep sleepTime
+            UserClick(1789, 1387, scrRatio)
+            Sleep sleepTime
+            UserClick(2144, 1656, scrRatio)
+            Sleep sleepTime
+            while UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+                UserClick(2144, 1656, scrRatio)
+                Sleep sleepTime
+            }
+            break
+        }
+
         UserClick(stdTargetX, stdTargetY, scrRatio)
-        Sleep sleepTime // 2
+        Sleep sleepTime
+        if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
+            UserClick(2202, 1342, scrRatio)
+        }
         if A_Index > waitTolerance {
             MsgBox "进入付费商店失败！"
             ExitApp
+        }
+    }
+
+    Sleep sleepTime
+    if UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+        UserClick(1789, 1387, scrRatio)
+        Sleep sleepTime
+        UserClick(1789, 1387, scrRatio)
+        Sleep sleepTime
+        UserClick(2144, 1656, scrRatio)
+        Sleep sleepTime
+        while UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+            UserClick(2144, 1656, scrRatio)
+            Sleep sleepTime
         }
     }
 
@@ -612,7 +685,7 @@ FreeShop(numOfBook)
 
 
     ;如果需要，则购买竞技场商店前三本书
-    if numOfBook >= 1 {
+    if numOfBook >= 1 or isCheckedCompanyWeapon {
         stdTargetX := 134
         stdTargetY := 1403
         UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -786,6 +859,54 @@ FreeShop(numOfBook)
         }
     }
 
+    if isCheckedCompanyWeapon {
+        stdCkptX := [2011]
+        stdCkptY := [1213]
+        desiredColor := ["0xD65E46"]
+        
+        if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            stdTargetX := 2017
+            stdTargetY := 1485
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+
+            stdCkptX := [2067]
+            stdCkptY := [1770]
+            desiredColor := ["0x07A0E4"]
+
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                UserClick(stdTargetX, stdTargetY, scrRatio)
+                Sleep sleepTime // 2
+                if A_Index > waitTolerance {
+                    MsgBox "公司武器熔炉购买异常！"
+                    ExitApp
+                }
+            }
+
+            stdTargetX := 2067
+            stdTargetY := 1770
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+
+            stdCkptX := [134]
+            stdCkptY := [1316]
+            desiredColor := ["0xFA9318"]
+
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                UserClick(stdTargetX, stdTargetY, scrRatio)
+                Sleep sleepTime // 2
+                if A_Index >= 2 {
+                    stdTargetX := 2067
+                    stdTargetY := 1970
+                }
+                if A_Index > waitTolerance {
+                    MsgBox "公司武器熔炉购买异常！"
+                    ExitApp
+                }
+            }
+        }
+    }
+
     stdTargetX := 333
     stdTargetY := 2041
     UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -866,13 +987,13 @@ Expedition()
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime // 2
     UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime // 2
+    Sleep sleepTime
     UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime // 2
+    Sleep sleepTime
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    Sleep 2000
+    Sleep 3000
 
     ;全部派遣
     stdCkptX := [1869, 1977]
@@ -897,6 +1018,9 @@ Expedition()
                 MsgBox "全部派遣失败！"
                 ExitApp
             }
+
+            if UserCheckColor([1779], [1778], ["0xCFCFCF"], scrRatio)
+                break
         }
 
         stdTargetX := 2073
@@ -1324,6 +1448,76 @@ SimulationRoom()
                     Sleep sleepTime // 2
                     UserClick(stdTargetX, stdTargetY, scrRatio)
                     Sleep sleepTime
+
+                    ;不替换buff
+                    ;点击不选择和确定
+                    tX := 2104
+                    tY := 1656
+                    desiredColor := ["0x089FE4"]
+
+                    flag := true
+
+                    while !UserCheckColor([tX], [tY], desiredColor, scrRatio) {
+                        tY := tY + 65
+                        if tY > 2160 {
+                            flag := false
+                            break
+                        }
+                    }
+
+                    if !flag {
+                        /*
+                        stdTargetX := 1908
+                        stdTargetY := 2016
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime // 2
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime // 2
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime // 2
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime
+                        */
+                        continue
+                    }
+
+                    ;MsgBox "点不选择"
+                    stdTargetX := 2185
+                    stdTargetY := tY - 200
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+
+                    ;MsgBox "点击确定"
+                    stdTargetX := 2185
+                    stdTargetY := tY
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime
+
+                    stdCkptX := [2104]
+                    stdCkptY := [tY]
+                    desiredColor := ["0x089FE4"]
+
+                    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                        UserClick(stdTargetX, stdTargetY, scrRatio)
+                        Sleep sleepTime
+                        if A_Index > waitTolerance {
+                            MsgBox "模拟室结束异常！"
+                            ExitApp
+                        }
+                    }
+
+                    stdTargetX := 1908
+                    stdTargetY := 2016
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime // 2
+                    UserClick(stdTargetX, stdTargetY, scrRatio)
+                    Sleep sleepTime
                 }
             }
         }
@@ -1461,6 +1655,10 @@ SimulationRoom()
             MsgBox "模拟室结束异常！"
             ExitApp
         }
+    }
+
+    if colorTolerance != 15 {
+        Sleep 5000
     }
 
     ;点击模拟结束
@@ -1675,14 +1873,14 @@ RookieArena(times)
 
     loop times {
         ;点击进入战斗
-        stdTargetX := 2320
-        stdTargetY := 1661
+        stdTargetX := 2371
+        stdTargetY := 1847
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
 
-        stdCkptX := [2267]
-        stdCkptY := [1593]
-        desiredColor := ["0x16B0F5"]
+        stdCkptX := [2700]
+        stdCkptY := [1691]
+        desiredColor := ["0xF7FCFE"]
 
         while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
             UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -2180,6 +2378,7 @@ EnterInterception()
     }
 
     ;进入特殊拦截战
+    /*
     stdTargetX := 2059
     stdTargetY := 1689
     UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -2197,6 +2396,7 @@ EnterInterception()
             ExitApp
         }
     }
+    */
 }
 
 
@@ -2256,6 +2456,12 @@ ClickOnTribeTower(*)
     isCheckedTribeTower := 1 - isCheckedTribeTower
 }
 
+ClickOnCompanyWeapon(*)
+{
+    global isCheckedCompanyWeapon
+    isCheckedCompanyWeapon := 1 - isCheckedCompanyWeapon
+}
+
 ChangeOnNumOfBook(GUICtrl, *)
 {
     global numOfBook
@@ -2288,13 +2494,76 @@ ChangeOnSleepTime(GUICtrl, *)
     }
 }
 
+ChangeOnColorTolerance(GUICtrl, *)
+{
+    global colorTolerance
+    switch GUICtrl.Value {
+        case 1: colorTolerance := 15
+        case 2: colorTolerance := 35
+        default: colorTolerance := 15
+    }
+}
+
+ClickOnHelp(*)
+{
+    msgbox "
+    (
+    #############################################
+    使用说明
+
+    对大多数老玩家来说Doro设置保持默认就好。
+    万一Doro失控，请按Ctrl + 1组合键结束进程。
+    万一Doro失控，请按Ctrl + 1组合键结束进程。
+    万一Doro失控，请按Ctrl + 1组合键结束进程。
+
+    ############################################# 
+    要求：
+
+    - 【设定-画质-全屏幕模式 + 16:9的显示器比例】   或    【16:9的窗口模式（窗口别拉太小，否则像素识别可能出现误差）】
+    - 设定-画质-开启光晕效果
+    - 设定-画质-开启颜色分级
+    - 游戏语言设置为简体中文
+    - 以**管理员身份**运行DoroHelper
+
+    ############################################# 
+    步骤：
+
+    -打开NIKKE启动器。点击启动。等右下角腾讯ACE反作弊系统扫完，NIKKE主程序中央SHIFT UP logo出现之后，再切出来点击“DORO!”按钮。如果你看到鼠标开始在左下角连点，那就代表启动成功了。（不行的话手动点击一下NIKKE，让它成为活跃窗口。）然后就可以悠闲地去泡一杯咖啡，或者刷一会儿手机，等待Doro完成工作了。
+    -也可以在游戏处在大厅界面时（有看板娘的页面）切出来点击“DORO!”按钮启动程序。
+    -游戏需要更新的时候请更新完再使用Doro。
+
+    ############################################# 
+    其他:
+    -不要开其他名叫"NIKKE"的文件夹或者窗口。否则Doro会抓错窗口。（因为NIKKE启动器也他妈的叫NIKKE，所以有极小概率会抓错成启动器。点一下NIKKE主程序然后Ctrl+1重启Doro即可。）
+    -如果出现死循环，提高点击间隔可以解决80%的问题。
+    -还是不行就上github搜索DoroHelper，看是否发布了新版本。
+    -如果你的电脑配置较好的话，或许可以尝试降低点击间隔。
+    
+    )"
+
+}
+
 ClickOnDoro(*)
 {
-    WinGetPos ,, &userScreenW, &userScreenH, "NIKKE"
+    WriteSettings()
+
+    if !A_IsAdmin {
+        MsgBox "请以管理员身份运行Doro"
+        ExitApp
+    }
+
+    title := "勝利女神：妮姬"
+    try {
+        WinGetClientPos ,, &userScreenW, &userScreenH, "勝利女神：妮姬"
+    } catch as err {
+        title := "NIKKE"
+    }
+
+    WinGetClientPos ,, &userScreenW, &userScreenH, title
     global scrRatio
     scrRatio := userScreenW / stdScreenW
 
-    nikkeID := WinWait("NIKKE")
+    nikkeID := WinWait(title)
     WinActivate nikkeID
 
     Login()
@@ -2340,6 +2609,105 @@ ClickOnDoro(*)
 }
 
 
+SleepTimeToLabel(sleepTime)
+{
+    return String(sleepTime / 250 - 2)
+}
+
+
+ColorToleranceToLabel(colorTolerance)
+{
+    switch colorTolerance {
+        case 15: return "1"
+        case 35: return "2"
+        default:
+            return "1"
+    }
+}
+
+
+IsCheckedToString(foo)
+{
+    if foo
+        return "Checked"
+    else
+        return ""
+}
+
+
+NumOfBookToLabel(n)
+{
+    return String(n + 1)
+}
+
+
+NumOfBattleToLabel(n)
+{
+    return String(n - 1)
+}
+
+NumOfLoveTalkingToLabel(n)
+{
+    return String(n)
+}
+
+
+WriteSettings()
+{
+    IniWrite(sleepTime, "settings.ini", "section1", "sleepTime")
+    IniWrite(colorTolerance, "settings.ini", "section1", "colorTolerance")
+    IniWrite(isCheckedOutposeDefence, "settings.ini", "section1", "isCheckedOutposeDefence")
+    IniWrite(isCheckedCashShop, "settings.ini", "section1", "isCheckedCashShop")
+    IniWrite(isCheckedFreeShop, "settings.ini", "section1", "isCheckedFreeShop")
+    IniWrite(isCheckedExpedtion, "settings.ini", "section1", "isCheckedExpedtion")
+    IniWrite(isCheckedFriendPoint, "settings.ini", "section1", "isCheckedFriendPoint")
+    IniWrite(isCheckedSimulationRoom, "settings.ini", "section1", "isCheckedSimulationRoom")
+    IniWrite(isCheckedRookieArena, "settings.ini", "section1", "isCheckedRookieArena")
+    IniWrite(isCheckedLoveTalking, "settings.ini", "section1", "isCheckedLoveTalking")
+    IniWrite(isCheckedTribeTower, "settings.ini", "section1", "isCheckedTribeTower")
+    IniWrite(isCheckedCompanyWeapon, "settings.ini", "section1", "isCheckedCompanyWeapon")
+    IniWrite(numOfBook, "settings.ini", "section1", "numOfBook")
+    IniWrite(numOfBattle, "settings.ini", "section1", "numOfBattle")
+    IniWrite(numOfLoveTalking, "settings.ini", "section1", "numOfLoveTalking")
+}
+
+
+LoadSettings()
+{
+    global sleepTime
+    global colorTolerance
+    global isCheckedOutposeDefence
+    global isCheckedCashShop
+    global isCheckedFreeShop
+    global isCheckedExpedtion
+    global isCheckedFriendPoint
+    global isCheckedSimulationRoom
+    global isCheckedRookieArena
+    global isCheckedLoveTalking
+    global isCheckedTribeTower
+    global isCheckedCompanyWeapon
+    global numOfBook
+    global numOfBattle
+    global numOfLoveTalking
+
+    sleepTime := IniRead("settings.ini", "section1", "sleepTime")
+    colorTolerance := IniRead("settings.ini", "section1", "colorTolerance")
+    isCheckedOutposeDefence := IniRead("settings.ini", "section1", "isCheckedOutposeDefence")
+    isCheckedCashShop := IniRead("settings.ini", "section1", "isCheckedCashShop")
+    isCheckedFreeShop := IniRead("settings.ini", "section1", "isCheckedFreeShop")
+    isCheckedExpedtion := IniRead("settings.ini", "section1", "isCheckedExpedtion")
+    isCheckedFriendPoint := IniRead("settings.ini", "section1", "isCheckedFriendPoint")
+    isCheckedSimulationRoom := IniRead("settings.ini", "section1", "isCheckedSimulationRoom")
+    isCheckedRookieArena := IniRead("settings.ini", "section1", "isCheckedRookieArena")
+    isCheckedLoveTalking := IniRead("settings.ini", "section1", "isCheckedLoveTalking")
+    isCheckedTribeTower := IniRead("settings.ini", "section1", "isCheckedTribeTower")
+    isCheckedCompanyWeapon := IniRead("settings.ini", "section1", "isCheckedCompanyWeapon")
+    numOfBook := IniRead("settings.ini", "section1", "numOfBook")
+    numOfBattle := IniRead("settings.ini", "section1", "numOfBattle")
+    numOfLoveTalking := IniRead("settings.ini", "section1", "numOfLoveTalking")
+}
+
+
 isCheckedOutposeDefence := 1
 isCheckedCashShop := 1
 isCheckedFreeShop := 1
@@ -2349,6 +2717,7 @@ isCheckedSimulationRoom := 1
 isCheckedRookieArena := 1
 isCheckedLoveTalking := 1
 isCheckedTribeTower := 1
+isCheckedCompanyWeapon := 1
 numOfBook := 3
 numOfBattle := 5
 numOfLoveTalking := 10
@@ -2358,28 +2727,48 @@ isBoughtTrash := 1
 ^1::{
     MsgBox isCheckedOutposeDefence " " isCheckedCashShop " " isCheckedFreeShop " " isCheckedExpedtion " " isCheckedFriendPoint " " isCheckedSimulationRoom " " isCheckedRookieArena " " isCheckedLoveTalking " " isCheckedTribeTower
 }
+^2::{
+    MsgBox colorTolerance
+}
 */
 
+
+;读取设置
+SetWorkingDir A_ScriptDir
+if not FileExist("settings.ini") {
+    ;MsgBox "write"
+    WriteSettings()
+} else {
+    ;MsgBox "load"
+    LoadSettings()
+}
+
+
 ;创建gui
-doroGui := Gui(, "Doro小帮手")
+doroGui := Gui(, "Doro小帮手" currentVersion)
+doroGui.Add("Button", "Default w80", "帮助").OnEvent("Click", ClickOnHelp)
+doroGui.Add("Button", "Default w80", "检查更新").OnEvent("Click", ClickOnCheckForUpdate)
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
-doroGui.Add("DropDownList", "Choose2", [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
-doroGui.Add("GroupBox", "w300 h320 YP+40", "想让Doro帮你做什么呢？")
-doroGui.Add("Checkbox", "Checked XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
-doroGui.Add("Checkbox", "Checked", "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
-doroGui.Add("Checkbox", "Checked", "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
+doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
+doroGui.Add("Text",, "色差容忍度，能跑就别改")
+doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
+doroGui.Add("GroupBox", "w300 h340 YP+40", "想让Doro帮你做什么呢？")
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedCashShop), "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop), "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
 doroGui.Add("Text",, "购买几本属性书？")
-doroGui.Add("DropDownList", "Choose4", [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
-doroGui.Add("Checkbox", "Checked", "派遣远征").OnEvent("Click", ClickOnExpedition)
-doroGui.Add("Checkbox", "Checked", "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
-doroGui.Add("Checkbox", "Checked", "模拟室5C(普通关卡需要快速战斗)").OnEvent("Click", ClickOnSimulationRoom)
-doroGui.Add("Checkbox", "Checked", "新人竞技场n次(请点开快速战斗)").OnEvent("Click", ClickOnRookieArena)
+doroGui.Add("DropDownList", "Choose" NumOfBookToLabel(numOfBook), [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyWeapon), "普通商店购买公司武器熔炉").OnEvent("Click", ClickOnCompanyWeapon)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedExpedtion), "派遣远征").OnEvent("Click", ClickOnExpedition)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedFriendPoint), "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedSimulationRoom), "模拟室5C(普通关卡需要快速战斗)").OnEvent("Click", ClickOnSimulationRoom)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedRookieArena), "新人竞技场n次(请点开快速战斗)").OnEvent("Click", ClickOnRookieArena)
 doroGui.Add("Text",, "新人竞技场打几次？")
-doroGui.Add("DropDownList", "Choose4", [2, 3, 4, 5]).OnEvent("Change", ChangeOnNumOfBattle)
-doroGui.Add("Checkbox", "Checked", "咨询n位妮姬(可以通过收藏改变妮姬排序)").OnEvent("Click", ClickOnLoveTalking)
+doroGui.Add("DropDownList", "Choose" NumOfBattleToLabel(numOfBattle), [2, 3, 4, 5]).OnEvent("Change", ChangeOnNumOfBattle)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedLoveTalking), "咨询n位妮姬(可以通过收藏改变妮姬排序)").OnEvent("Click", ClickOnLoveTalking)
 doroGui.Add("Text",, "咨询几位妮姬？")
-doroGui.Add("DropDownList", "Choose10", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).OnEvent("Change", ChangeOnNumOfLoveTalking)
-doroGui.Add("Checkbox", "Checked", "爬塔1次(蹭每日任务)").OnEvent("Click", ClickOnTribeTower)
+doroGui.Add("DropDownList", "Choose" NumOfLoveTalkingToLabel(numOfLoveTalking), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).OnEvent("Change", ChangeOnNumOfLoveTalking)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedTribeTower), "爬塔1次(蹭每日任务)").OnEvent("Click", ClickOnTribeTower)
 doroGui.Add("Button", "Default w80 XP+100 YP+40", "DORO!").OnEvent("Click", ClickOnDoro)
 doroGui.Show()
 
