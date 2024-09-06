@@ -2,7 +2,7 @@
 
 PC端自用日常任务清理助手：DoroHelper
 
-![image](https://github.com/kyokakawaii/DoroHelper/blob/dev/preview.png)
+![image](https://github.com/kyokakawaii/DoroHelper/blob/67486160e97713900c43cc2c68e176dd65e1f442/img/preview.png)
 
 
 ### 叠甲：
@@ -98,6 +98,11 @@ PC端自用日常任务清理助手：DoroHelper
 如果出现死循环，提高点击间隔可以解决80%的问题。
 
 如果你的电脑配置较好的话，可以尝试降低点击间隔。
+
+可以尝试设置得和我一样：
+
+![image](https://github.com/kyokakawaii/DoroHelper/blob/67486160e97713900c43cc2c68e176dd65e1f442/img/setting1.png)
+![image](https://github.com/kyokakawaii/DoroHelper/blob/67486160e97713900c43cc2c68e176dd65e1f442/img/setting2.png)
 
 # 借物表
 
