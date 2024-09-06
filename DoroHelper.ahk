@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.5"
+currentVersion := "v0.1.6"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -2325,7 +2325,310 @@ TribeTower()
 
 
 ;=============================================================
-;10: 进入特拦界面
+MissionCompleted()
+{
+    stdCkptX := [3451, 3756]
+    stdCkptY := [2077, 2075]
+    desiredColor := ["0x00A1FF", "0x00A1FF"]
+
+    if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+        return true
+    else
+        return false
+}
+
+MissionFailed()
+{
+    stdCkptX := [2306, 1920]
+    stdCkptY := [702, 1485]
+    desiredColor := ["0xB71013", "0xE9E9E7"]
+
+    if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+        return true
+    else
+        return false
+}
+
+MissionEnded()
+{
+    stdCkptX := [3494, 3721]
+    stdCkptY := [2086, 2093]
+    desiredColor := ["0x6F6F6F", "0x6F6F6F"]
+
+    if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+        return true
+    else
+        return false
+}
+
+failedTower := Array()
+
+CompanyTowerInfo()
+{
+    info := ""
+    loop failedTower.Length {
+        info := info failedTower[A_Index] " "
+    }
+    if info != "" {
+        info := "`n" info "已经爬不动惹dororo..."
+    }
+    return info
+}
+
+;10: 企业塔
+CompanyTower()
+{
+    stdTargetX := 2689
+    stdTargetY := 1463
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep sleepTime
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"]
+
+    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime // 2
+        if A_Index > waitTolerance {
+            MsgBox "进入方舟失败！"
+            ExitApp
+        }
+    }
+
+    stdCkptX := [1641]
+    stdCkptY := [324]
+    desiredColor := ["0x01D4F6"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入方舟失败！"
+            ExitApp
+        }
+    }
+
+    ;进入无限之塔
+    stdTargetX := 2278
+    stdTargetY := 776
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep sleepTime
+
+    stdCkptX := [2405]
+    stdCkptY := [1014]
+    desiredColor := ["0xF8FBFE"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入无限之塔失败！"
+            ExitApp
+        }
+    }
+
+    Sleep 1500
+
+    ;尝试进入每座企业塔
+    targX := [1501, 1779, 2061, 2332]
+    targY := [1497, 1497, 1497, 1497]
+    ckptX := [1383, 1665, 1935, 2222]
+    ckptY := [1925, 1925, 1925, 1925]
+
+    loop targX.Length {
+        i := A_Index
+
+        stdTargetX := targX[i]
+        stdTargetY := targY[i]
+        stdCkptX := [ckptX[i]]
+        stdCkptY := [ckptY[i]]
+        desiredColor := ["0x00AAF4"]
+
+        ;如果未开放，则检查下一个企业
+        if !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+            continue
+
+        ;点击进入企业塔
+        while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "进入企业塔失败！"
+                ExitApp
+            }
+        }
+
+        ;直到成功进入企业塔
+        stdCkptX := [3738]
+        stdCkptY := [447]
+        desiredColor := ["0xF8FCFE"]
+
+        while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "进入企业塔失败！"
+                ExitApp
+            }
+        }
+
+        ;进入关卡页面
+        stdTargetX := 1918
+        stdTargetY := 919
+
+        stdCkptX := [992]
+        stdCkptY := [2011]
+        desiredColor := ["0x000000"]
+
+        while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "进入企业塔关卡页面失败！"
+                ExitApp
+            }
+        }
+
+        ;如果战斗次数已经用完
+        Sleep 1000
+        stdCkptX := [2038]
+        stdCkptY := [2057]
+        desiredColor := ["0x4D4E50"]
+        if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            stdCkptX := [3738]
+            stdCkptY := [447]
+            desiredColor := ["0xF8FCFE"]
+            while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                Send "{Escape}"
+                Sleep sleepTime
+            }
+            
+            stdCkptX := [2405]
+            stdCkptY := [1014]
+            desiredColor := ["0xF8FBFE"]
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+                Sleep sleepTime
+
+            Sleep 1500
+            continue
+        }
+
+        ;点击进入战斗
+        stdTargetX := 2249
+        stdTargetY := 1997
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+
+        ;等待战斗结束
+        WaitForBattleEnd:
+        while !(MissionCompleted() || MissionFailed() || MissionEnded()) {
+            Sleep sleepTime
+            if A_Index > waitTolerance * 20 {
+                MsgBox "企业塔自动战斗失败！"
+                ExitApp
+            }
+        }
+
+        ;如果战斗失败或次数用完
+        if MissionFailed() || MissionEnded() {
+            if MissionFailed() {
+                towerName := ""
+                global failedTower
+                switch i {
+                    case 1:
+                        towerName := "极乐净土塔"
+                    case 2:
+                        towerName := "米西利斯塔"
+                    case 3:
+                        towerName := "泰特拉塔"
+                    case 4:
+                        towerName := "朝圣者塔"
+                    default:
+                        towerName := ""
+                }
+                failedTower.Push towerName
+            }
+
+            Send "{Escape}"
+            Sleep sleepTime
+
+            while MissionFailed() || MissionEnded() {
+                Send "{Escape}"
+                Sleep sleepTime
+            }
+
+            stdCkptX := [3738]
+            stdCkptY := [447]
+            desiredColor := ["0xF8FCFE"]
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                UserClick(3666, 1390, scrRatio)
+                Sleep sleepTime
+                if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
+                    UserClick(2202, 1342, scrRatio)
+                    Sleep sleepTime
+                }
+            }
+
+            Sleep 1500
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                UserClick(3666, 1390, scrRatio)
+                Sleep sleepTime
+                if UserCheckColor([2088], [1327], ["0x00A0EB"], scrRatio) {
+                    UserClick(2202, 1342, scrRatio)
+                    Sleep sleepTime
+                }
+            }
+
+            while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+                Send "{Escape}"
+                Sleep sleepTime
+            }
+
+            stdCkptX := [2405]
+            stdCkptY := [1014]
+            desiredColor := ["0xF8FBFE"]
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+                Sleep sleepTime
+
+            Sleep 1500
+            continue
+        }
+
+        ;如果战斗胜利
+        while MissionCompleted() {
+            Send "t"
+            Sleep sleepTime
+        }
+
+        goto WaitForBattleEnd
+    }
+
+    ;退回大厅
+    stdTargetX := 301
+    stdTargetY := 2030
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep sleepTime
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "退回大厅失败！"
+            ExitApp
+        }
+    }
+}
+
+
+;=============================================================
+;11: 进入异拦
 EnterInterception()
 {
     stdTargetX := 2689
@@ -2373,6 +2676,325 @@ EnterInterception()
         Sleep sleepTime
         if A_Index > waitTolerance {
             MsgBox "进入拦截战失败！"
+            ExitApp
+        }
+    }
+
+    ;不勾选自动拦截就直接退出
+    if !isCheckedInterception
+        return
+
+    stdCkptX := [1917]
+    stdCkptY := [910]
+    desiredColor := ["0x037EF9"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入拦截战失败！"
+            ExitApp
+        }
+    }
+
+    ;选择BOSS
+    switch InterceptionBoss {
+        case 1:
+            stdTargetX := 1556
+            stdTargetY := 886
+            stdCkptX := [1907]
+            stdCkptY := [898]
+            desiredColor := ["0xFA910E"]
+
+        case 2:
+            stdTargetX := 2279
+            stdTargetY := 1296
+            stdCkptX := [1923]
+            stdCkptY := [908]
+            desiredColor := ["0xFB01F1"]
+
+        case 3:
+            stdCkptX := [1917]
+            stdCkptY := [910]
+            desiredColor := ["0x037EF9"]
+
+        case 4:
+            stdTargetX := 2281
+            stdTargetY := 899
+            stdCkptX := [1916]
+            stdCkptY := [907]
+            desiredColor := ["0x00F556"]
+
+        case 5:
+            stdTargetX := 1551
+            stdTargetY := 1299
+            stdCkptX := [1919]
+            stdCkptY := [890]
+            desiredColor := ["0xFD000F"]
+            
+        default:
+            MsgBox "BOSS选择错误！"
+            ExitApp
+    }
+
+    if InterceptionBoss != 3 {
+        while UserCheckColor([1917], [910], ["0x037EF9"], scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "选择BOSS失败！"
+                ExitApp
+            }
+        }
+    }
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "选择BOSS失败！"
+            ExitApp
+        }
+    }
+
+    ;点击挑战按钮
+    if UserCheckColor([1735], [1730], ["0x28282A"], scrRatio) {
+        stdTargetX := 301
+        stdTargetY := 2030
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+
+        stdCkptX := [64]
+        stdCkptY := [470]
+        desiredColor := ["0xFAA72C"]
+
+        while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "退回大厅失败！"
+                ExitApp
+            }
+        }
+        return
+    }
+
+    stdTargetX := 1924
+    stdTargetY := 1779
+
+    /*
+    stdCkptX := [1735]
+    stdCkptY := [1730]
+    desiredColor := [""]
+
+    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "点击挑战失败！"
+            ExitApp
+        }
+    }
+    */
+
+    stdCkptX := [1390]
+    stdCkptY := [1799]
+    desiredColor := ["0x01AEF3"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "点击挑战失败！"
+            ExitApp
+        }
+    }
+    
+    ;选择编队
+    switch InterceptionBoss {
+        case 1:
+            stdTargetX := 1882
+            stdTargetY := 1460
+            stdCkptX := [1843]
+            stdCkptY := [1428]
+
+        case 2:
+            stdTargetX := 2020
+            stdTargetY := 1460
+            stdCkptX := [1981]
+            stdCkptY := [1428]
+
+        case 3:
+            stdTargetX := 2151
+            stdTargetY := 1460
+            stdCkptX := [2113]
+            stdCkptY := [1428]
+
+        case 4:
+            stdTargetX := 2282
+            stdTargetY := 1460
+            stdCkptX := [2248]
+            stdCkptY := [1428]
+
+        case 5:
+            stdTargetX := 2421
+            stdTargetY := 1460
+            stdCkptX := [2380]
+            stdCkptY := [1428]
+            
+        default:
+            MsgBox "BOSS选择错误！"
+            ExitApp
+    }
+
+    desiredColor := ["0x02ADF5"]
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep 1500
+        if A_Index > waitTolerance {
+            MsgBox "选择编队失败！"
+            ExitApp
+        }
+    }
+
+    ;如果不能快速战斗，就进入战斗
+    stdCkptX := [1964]
+    stdCkptY := [1800]
+    desiredColor := ["0xF96B2F"]
+
+    if !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        stdTargetX := 2219
+        stdTargetY := 1992
+        stdCkptX := [1962]
+        stdCkptY := [1932]
+        desiredColor := ["0xD52013"]
+
+        while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "进入战斗失败！"
+                ExitApp
+            }
+        }
+
+        ;退出结算页面
+        stdTargetX := 904
+        stdTargetY := 1805
+        stdCkptX := [1893, 1913, 1933]
+        stdCkptY := [1951, 1948, 1956]
+        desiredColor := ["0xFFFFFF", "0xFFFFFF", "0xFFFFFF"]
+
+        while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            Sleep sleepTime
+            if A_Index > waitTolerance * 20 {
+                MsgBox "自动战斗失败！"
+                ExitApp
+            }
+        }
+
+        while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "退出结算页面失败！"
+                ExitApp
+            }
+        }
+    }
+
+    ;检查是否退出
+    stdCkptX := [1390]
+    stdCkptY := [1799]
+    desiredColor := ["0x01AEF3"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "退出结算页面失败！"
+            ExitApp
+        }
+    }
+
+    ;快速战斗
+    stdTargetX := 2229
+    stdTargetY := 1842
+    stdCkptX := [1964]
+    stdCkptY := [1800]
+    desiredColor := ["0xF96B2F"]
+
+    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+
+        while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "快速战斗失败！"
+                ExitApp
+            }
+        }
+
+        ;退出结算页面
+        stdTargetX := 904
+        stdTargetY := 1805
+        stdCkptX := [1893, 1913, 1933]
+        stdCkptY := [1951, 1948, 1956]
+        desiredColor := ["0xFFFFFF", "0xFFFFFF", "0xFFFFFF"]
+
+        while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "快速战斗结算失败！"
+                ExitApp
+            }
+        }
+
+        while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "退出结算页面失败！"
+                ExitApp
+            }
+        }
+
+        ;检查是否退出
+        stdCkptX := [1390]
+        stdCkptY := [1799]
+        desiredColor := ["0x01AEF3"]
+
+        while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "退出结算页面失败！"
+                ExitApp
+            }
+        }
+
+        Sleep 1000
+
+        stdTargetX := 2229
+        stdTargetY := 1842
+        stdCkptX := [1964]
+        stdCkptY := [1800]
+        desiredColor := ["0xF96B2F"]
+    }
+
+    ;退回大厅
+    stdTargetX := 301
+    stdTargetY := 2030
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep sleepTime
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "退回大厅失败！"
             ExitApp
         }
     }
@@ -2462,6 +3084,18 @@ ClickOnCompanyWeapon(*)
     isCheckedCompanyWeapon := 1 - isCheckedCompanyWeapon
 }
 
+ClickOnInterception(*)
+{
+    global isCheckedInterception
+    isCheckedInterception := 1 - isCheckedInterception
+}
+
+ClickOnCompanyTower(*)
+{
+    global isCheckedCompanyTower
+    isCheckedCompanyTower := 1 - isCheckedCompanyTower
+}
+
 ChangeOnNumOfBook(GUICtrl, *)
 {
     global numOfBook
@@ -2478,6 +3112,12 @@ ChangeOnNumOfLoveTalking(GUICtrl, *)
 {
     global numOfLoveTalking
     numOfLoveTalking := GUICtrl.Value
+}
+
+ChangeOnInterceptionBoss(GUICtrl, *)
+{
+    global InterceptionBoss
+    InterceptionBoss := GUICtrl.Value
 }
 
 ChangeOnSleepTime(GUICtrl, *)
@@ -2592,8 +3232,11 @@ ClickOnDoro(*)
     if isCheckedLoveTalking
         LoveTalking(numOfLoveTalking)
 
-    if isCheckedTribeTower
+    if isCheckedTribeTower && !isCheckedCompanyTower
         TribeTower()
+
+    if isCheckedCompanyTower
+        CompanyTower()
 
     if isCheckedOutposeDefence
         OutpostDefence()
@@ -2603,7 +3246,7 @@ ClickOnDoro(*)
     if isBoughtTrash == 0 
         MsgBox "协同作战商店似乎已经刷新了，快去看看吧"
 
-    MsgBox "Doro完成任务！"
+    MsgBox "Doro完成任务！" CompanyTowerInfo()
 
     ExitApp
 }
@@ -2651,6 +3294,11 @@ NumOfLoveTalkingToLabel(n)
     return String(n)
 }
 
+InterceptionBossToLabel(n)
+{
+    return String(n)
+}
+
 
 WriteSettings()
 {
@@ -2669,6 +3317,9 @@ WriteSettings()
     IniWrite(numOfBook, "settings.ini", "section1", "numOfBook")
     IniWrite(numOfBattle, "settings.ini", "section1", "numOfBattle")
     IniWrite(numOfLoveTalking, "settings.ini", "section1", "numOfLoveTalking")
+    IniWrite(isCheckedInterception, "settings.ini", "section1", "isCheckedInterception")
+    IniWrite(InterceptionBoss, "settings.ini", "section1", "InterceptionBoss")
+    IniWrite(isCheckedCompanyTower, "settings.ini", "section1", "isCheckedCompanyTower")
 }
 
 
@@ -2689,6 +3340,9 @@ LoadSettings()
     global numOfBook
     global numOfBattle
     global numOfLoveTalking
+    global isCheckedInterception
+    global InterceptionBoss
+    global isCheckedCompanyTower
 
     sleepTime := IniRead("settings.ini", "section1", "sleepTime")
     colorTolerance := IniRead("settings.ini", "section1", "colorTolerance")
@@ -2705,6 +3359,27 @@ LoadSettings()
     numOfBook := IniRead("settings.ini", "section1", "numOfBook")
     numOfBattle := IniRead("settings.ini", "section1", "numOfBattle")
     numOfLoveTalking := IniRead("settings.ini", "section1", "numOfLoveTalking")
+
+    try {
+        isCheckedInterception := IniRead("settings.ini", "section1", "isCheckedInterception")
+    }
+    catch as err {
+        IniWrite(isCheckedInterception, "settings.ini", "section1", "isCheckedInterception")
+    }
+    
+    try {
+        InterceptionBoss := IniRead("settings.ini", "section1", "InterceptionBoss")
+    }
+    catch as err {
+        IniWrite(InterceptionBoss, "settings.ini", "section1", "InterceptionBoss")
+    }
+
+    try {
+        isCheckedCompanyTower := IniRead("settings.ini", "section1", "isCheckedCompanyTower")
+    }
+    catch as err {
+        IniWrite(isCheckedCompanyTower, "settings.ini", "section1", "isCheckedCompanyTower")
+    }
 }
 
 
@@ -2718,6 +3393,9 @@ isCheckedRookieArena := 1
 isCheckedLoveTalking := 1
 isCheckedTribeTower := 1
 isCheckedCompanyWeapon := 1
+isCheckedInterception := 0
+isCheckedCompanyTower := 0
+InterceptionBoss := 1
 numOfBook := 3
 numOfBattle := 5
 numOfLoveTalking := 10
@@ -2735,6 +3413,14 @@ isBoughtTrash := 1
 
 ;读取设置
 SetWorkingDir A_ScriptDir
+try {
+    LoadSettings()
+}
+catch as err {
+    WriteSettings()
+}
+
+/*
 if not FileExist("settings.ini") {
     ;MsgBox "write"
     WriteSettings()
@@ -2742,6 +3428,7 @@ if not FileExist("settings.ini") {
     ;MsgBox "load"
     LoadSettings()
 }
+*/
 
 
 ;创建gui
@@ -2752,7 +3439,7 @@ doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
 doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
-doroGui.Add("GroupBox", "w300 h340 YP+40", "想让Doro帮你做什么呢？")
+doroGui.Add("GroupBox", "w300 h435 YP+40", "想让Doro帮你做什么呢？")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCashShop), "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop), "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
@@ -2769,6 +3456,10 @@ doroGui.Add("Checkbox", IsCheckedToString(isCheckedLoveTalking), "咨询n位妮�
 doroGui.Add("Text",, "咨询几位妮姬？")
 doroGui.Add("DropDownList", "Choose" NumOfLoveTalkingToLabel(numOfLoveTalking), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).OnEvent("Change", ChangeOnNumOfLoveTalking)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedTribeTower), "爬塔1次(蹭每日任务)").OnEvent("Click", ClickOnTribeTower)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyTower), "爬企业塔(勾选此条则上条无效)").OnEvent("Click", ClickOnCompanyTower)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedInterception), "使用对应编队进行异常拦截自动战斗`n（不勾选则在异拦界面停止）").OnEvent("Click", ClickOnInterception)
+doroGui.Add("Text",, "自动打哪个异拦boss？(勾选上条才生效)")
+doroGui.Add("DropDownList", "Choose" InterceptionBossToLabel(InterceptionBoss), ["克拉肯(石)，编队1", "过激派(头)，编队2", "镜像容器(手)，编队3", "茵迪维利亚(衣)，编队4", "死神(脚)，编队5"]).OnEvent("Change", ChangeOnInterceptionBoss)
 doroGui.Add("Button", "Default w80 XP+100 YP+40", "DORO!").OnEvent("Click", ClickOnDoro)
 doroGui.Show()
 
