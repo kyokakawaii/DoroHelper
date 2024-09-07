@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.6"
+currentVersion := "v0.1.7"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -112,7 +112,13 @@ Login()
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
-        if A_Index > waitTolerance * 10 {
+
+        if UserCheckColor([1973, 1969], [1368, 1432], ["0x00ADFB", "0x00ADFB"], scrRatio) {
+            UserClick(2127, 1400, scrRatio)
+            Sleep sleepTime
+        }
+
+        if A_Index > waitTolerance * 20 {
             MsgBox "登录失败！"
             ExitApp
         }
