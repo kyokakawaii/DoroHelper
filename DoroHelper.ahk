@@ -2345,9 +2345,9 @@ MissionCompleted()
 
 MissionFailed()
 {
-    stdCkptX := [2306, 1920]
-    stdCkptY := [702, 1485]
-    desiredColor := ["0xB71013", "0xE9E9E7"]
+    stdCkptX := [2306, 1920, 1590, 1560]
+    stdCkptY := [702, 1485, 1489, 1473]
+    desiredColor := ["0xB71013", "0xE9E9E7", "0x161515", "0xE9E9E7"]
 
     if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
         return true
@@ -2357,9 +2357,9 @@ MissionFailed()
 
 MissionEnded()
 {
-    stdCkptX := [3494, 3721]
-    stdCkptY := [2086, 2093]
-    desiredColor := ["0x6F6F6F", "0x6F6F6F"]
+    stdCkptX := [3494, 3721, 3526, 3457, 3339, 3407]
+    stdCkptY := [2086, 2093, 2033, 2043, 2040, 2043]
+    desiredColor := ["0x6F6F6F", "0x6F6F6F", "0x030303", "0x434343", "0xE6E6E6", "0x000000"]
 
     if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
         return true
@@ -3180,7 +3180,6 @@ ClickOnHelp(*)
 
     ############################################# 
     其他:
-    -不要开其他名叫"NIKKE"的文件夹或者窗口。否则Doro会抓错窗口。（因为NIKKE启动器也他妈的叫NIKKE，所以有极小概率会抓错成启动器。点一下NIKKE主程序然后Ctrl+1重启Doro即可。）
     -如果出现死循环，提高点击间隔可以解决80%的问题。
     -还是不行就上github搜索DoroHelper，看是否发布了新版本。
     -如果你的电脑配置较好的话，或许可以尝试降低点击间隔。
@@ -3202,7 +3201,7 @@ ClickOnDoro(*)
     try {
         WinGetClientPos ,, &userScreenW, &userScreenH, "勝利女神：妮姬"
     } catch as err {
-        title := "NIKKE"
+        title := "ahk_exe nikke.exe"
     }
 
     WinGetClientPos ,, &userScreenW, &userScreenH, title
