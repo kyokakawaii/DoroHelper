@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.7"
+currentVersion := "v0.1.8"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -1630,7 +1630,7 @@ SimulationRoom()
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime // 2
 
-    stdCkptX := [1420, 2337]
+    stdCkptX := [1420, 2335]
     stdCkptY := [1243, 1440]
     desiredColor := ["0xFFFFFF", "0xFE0203"]
 
@@ -1802,14 +1802,14 @@ RookieArena(times)
     stdTargetX := 2278
     stdTargetY := 1092
     UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime // 2
+    Sleep sleepTime
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime // 2
 
     stdTargetX := 2129
     stdTargetY := 1920
     UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime // 2
+    Sleep sleepTime
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime // 2
     UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -2885,9 +2885,9 @@ EnterInterception()
         ;退出结算页面
         stdTargetX := 904
         stdTargetY := 1805
-        stdCkptX := [1893, 1913, 1933]
-        stdCkptY := [1951, 1948, 1956]
-        desiredColor := ["0xFFFFFF", "0xFFFFFF", "0xFFFFFF"]
+        stdCkptX := [3731, 3713, 3638]
+        stdCkptY := [2040, 2034, 2091]
+        desiredColor := ["0xE6E6E6", "0xE6E6E6", "0x000000"]
 
         while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
             Sleep sleepTime
@@ -2943,6 +2943,29 @@ EnterInterception()
         ;退出结算页面
         stdTargetX := 904
         stdTargetY := 1805
+        stdCkptX := [2232, 2391, 2464]
+        stdCkptY := [2100, 2099, 2051]
+        desiredColor := ["0x000000", "0x000000", "0x000000"]
+
+        while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "快速战斗结算失败！"
+                ExitApp
+            }
+        }
+
+        while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            UserClick(stdTargetX, stdTargetY, scrRatio)
+            Sleep sleepTime
+            if A_Index > waitTolerance {
+                MsgBox "退出结算页面失败！"
+                ExitApp
+            }
+        }
+        /*
+        stdTargetX := 904
+        stdTargetY := 1805
         stdCkptX := [1893, 1913, 1933]
         stdCkptY := [1951, 1948, 1956]
         desiredColor := ["0xFFFFFF", "0xFFFFFF", "0xFFFFFF"]
@@ -2963,6 +2986,7 @@ EnterInterception()
                 ExitApp
             }
         }
+        */
 
         ;检查是否退出
         stdCkptX := [1390]
