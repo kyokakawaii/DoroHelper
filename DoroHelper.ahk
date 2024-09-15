@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.8"
+currentVersion := "v0.1.9"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -1097,6 +1097,14 @@ FriendPoint()
     stdTargetX := 2276
     stdTargetY := 1837
 
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) && !UserCheckColor([2104, 2054], [1825, 1876], ["0x8B8788", "0x8B8788"], scrRatio) {
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入好友界面失败！"
+            ExitApp
+        }
+    }
+
     while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
@@ -1451,7 +1459,7 @@ SimulationRoom()
                     UserClick(stdTargetX, stdTargetY, scrRatio)
                     Sleep sleepTime // 2
                     UserClick(stdTargetX, stdTargetY, scrRatio)
-                    Sleep sleepTime // 2
+                    Sleep sleepTime
                     UserClick(stdTargetX, stdTargetY, scrRatio)
                     Sleep sleepTime
 
@@ -1521,7 +1529,7 @@ SimulationRoom()
                     UserClick(stdTargetX, stdTargetY, scrRatio)
                     Sleep sleepTime // 2
                     UserClick(stdTargetX, stdTargetY, scrRatio)
-                    Sleep sleepTime // 2
+                    Sleep sleepTime
                     UserClick(stdTargetX, stdTargetY, scrRatio)
                     Sleep sleepTime
                 }
@@ -2578,7 +2586,7 @@ CompanyTower()
                 }
             }
 
-            Sleep 1500
+            Sleep 5000
             while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
                 UserClick(3666, 1390, scrRatio)
                 Sleep sleepTime
