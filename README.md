@@ -2,7 +2,7 @@
 
 PC端自用日常任务清理助手：DoroHelper
 
-![image](https://github.com/kyokakawaii/DoroHelper/blob/67486160e97713900c43cc2c68e176dd65e1f442/img/preview.png)
+![image](https://github.com/kyokakawaii/DoroHelper/blob/dev/img/preview.png)
 
 
 ### 叠甲：
