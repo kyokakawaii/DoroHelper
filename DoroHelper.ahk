@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.9"
+currentVersion := "v0.1.10"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -77,6 +77,35 @@ ClickOnCheckForUpdate(*)
 }
 
 
+CheckForUpdate()
+{
+    latestObj := Github.latest(usr, repo)
+    if currentVersion != latestObj.version
+    {
+        userResponse := MsgBox(
+            "DoroHelper存在更新版本:`n"
+            "`nVersion: " latestObj.version
+            "`nNotes:`n" 
+            . latestObj.change_notes  
+            "`n`n是否下载?",, '36')
+
+        if (userResponse = "Yes") {
+            try {
+                Github.Download(latestObj.downloadURLs[1], A_ScriptDir "\DoroDownload")
+            }
+            catch as err {
+                MsgBox "下载失败，请检查网络。"
+            } 
+            else {
+                FileMove "DoroDownload.exe", "DoroHelper-" latestObj.version ".exe"
+                MsgBox "已下载至当前目录。"
+                ExitApp
+            }
+        }
+    }
+}
+
+
 ;functions
 UserClick(sX, sY, k)
 {
@@ -115,6 +144,11 @@ Login()
 
         if UserCheckColor([1973, 1969], [1368, 1432], ["0x00ADFB", "0x00ADFB"], scrRatio) {
             UserClick(2127, 1400, scrRatio)
+            Sleep sleepTime
+        }
+
+        if UserCheckColor([1965, 1871], [1321, 1317], ["0x00A0EB", "0xF7F7F7"], scrRatio) {
+            UserClick(2191, 1350, scrRatio)
             Sleep sleepTime
         }
 
@@ -1074,7 +1108,7 @@ Expedition()
 FriendPoint()
 {
     stdTargetX := 3729
-    stdTargetY := 524
+    stdTargetY := 553
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
@@ -1948,6 +1982,14 @@ RookieArena(times)
 
 ;=============================================================
 ;8: 对前n位nikke进行好感度咨询(可以通过收藏把想要咨询的nikke排到前面)
+NotAllCollection()
+{
+    stdCkptX := [2447]
+    stdCkptY := [1464]
+    desiredColor := ["0x444547"]
+    return UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+}
+
 LoveTalking(times)
 {
     ;进入妮姬列表
@@ -2046,7 +2088,7 @@ LoveTalking(times)
         desiredColor := ["0xFA6E34"]
 
         ;如果能够快速咨询
-        if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) && !(isCheckedLongTalk && NotAllCollection()) {
             ;点击快速咨询
             stdTargetX := 2175
             stdTargetY := 1634
@@ -2698,6 +2740,7 @@ EnterInterception()
     if !isCheckedInterception
         return
 
+    /*
     stdCkptX := [1917]
     stdCkptY := [910]
     desiredColor := ["0x037EF9"]
@@ -2709,6 +2752,16 @@ EnterInterception()
             ExitApp
         }
     }
+    */
+
+    stdTargetX := 559
+    stdTargetY := 1571
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep 1000
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep 1000
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep 1000
 
     ;选择BOSS
     switch InterceptionBoss {
@@ -2750,6 +2803,7 @@ EnterInterception()
             ExitApp
     }
 
+    /*
     if InterceptionBoss != 3 {
         while UserCheckColor([1917], [910], ["0x037EF9"], scrRatio) {
             UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -2760,9 +2814,13 @@ EnterInterception()
             }
         }
     }
+    */
+    stdTargetX := 1556
+    stdTargetY := 886
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
-        Sleep sleepTime
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep 2000
         if A_Index > waitTolerance {
             MsgBox "选择BOSS失败！"
             ExitApp
@@ -3134,6 +3192,18 @@ ClickOnCompanyTower(*)
     isCheckedCompanyTower := 1 - isCheckedCompanyTower
 }
 
+ClickOnLongTalk(*)
+{
+    global isCheckedLongTalk
+    isCheckedLongTalk := 1 - isCheckedLongTalk
+}
+
+ClickAutoCheckUpdate(*)
+{
+    global isCheckedAutoCheckUpdate
+    isCheckedAutoCheckUpdate := 1 - isCheckedAutoCheckUpdate
+}
+
 ChangeOnNumOfBook(GUICtrl, *)
 {
     global numOfBook
@@ -3202,6 +3272,7 @@ ClickOnHelp(*)
     - 设定-画质-开启颜色分级
     - 游戏语言设置为简体中文
     - 以**管理员身份**运行DoroHelper
+    - 不要开启windows HDR显示
 
     ############################################# 
     步骤：
@@ -3212,8 +3283,8 @@ ClickOnHelp(*)
 
     ############################################# 
     其他:
+    -检查是否发布了新版本。
     -如果出现死循环，提高点击间隔可以解决80%的问题。
-    -还是不行就上github搜索DoroHelper，看是否发布了新版本。
     -如果你的电脑配置较好的话，或许可以尝试降低点击间隔。
     
     )"
@@ -3357,6 +3428,8 @@ WriteSettings()
     IniWrite(isCheckedInterception, "settings.ini", "section1", "isCheckedInterception")
     IniWrite(InterceptionBoss, "settings.ini", "section1", "InterceptionBoss")
     IniWrite(isCheckedCompanyTower, "settings.ini", "section1", "isCheckedCompanyTower")
+    IniWrite(isCheckedLongTalk, "settings.ini", "section1", "isCheckedLongTalk")
+    IniWrite(isCheckedAutoCheckUpdate, "settings.ini", "section1", "isCheckedAutoCheckUpdate")
 }
 
 
@@ -3380,6 +3453,8 @@ LoadSettings()
     global isCheckedInterception
     global InterceptionBoss
     global isCheckedCompanyTower
+    global isCheckedLongTalk
+    global isCheckedAutoCheckUpdate
 
     sleepTime := IniRead("settings.ini", "section1", "sleepTime")
     colorTolerance := IniRead("settings.ini", "section1", "colorTolerance")
@@ -3417,6 +3492,20 @@ LoadSettings()
     catch as err {
         IniWrite(isCheckedCompanyTower, "settings.ini", "section1", "isCheckedCompanyTower")
     }
+
+    try {
+        isCheckedLongTalk := IniRead("settings.ini", "section1", "isCheckedLongTalk")
+    }
+    catch as err {
+        IniWrite(isCheckedLongTalk, "settings.ini", "section1", "isCheckedLongTalk")
+    }
+
+    try {
+        isCheckedAutoCheckUpdate := IniRead("settings.ini", "section1", "isCheckedAutoCheckUpdate")
+    }
+    catch as err {
+        IniWrite(isCheckedAutoCheckUpdate, "settings.ini", "section1", "isCheckedAutoCheckUpdate")
+    }
 }
 
 
@@ -3432,6 +3521,8 @@ isCheckedTribeTower := 1
 isCheckedCompanyWeapon := 1
 isCheckedInterception := 0
 isCheckedCompanyTower := 0
+isCheckedLongTalk := 0
+isCheckedAutoCheckUpdate := 0
 InterceptionBoss := 1
 numOfBook := 3
 numOfBattle := 5
@@ -3467,35 +3558,40 @@ if not FileExist("settings.ini") {
 }
 */
 
+if isCheckedAutoCheckUpdate {
+    CheckForUpdate()
+}
 
 ;创建gui
 doroGui := Gui(, "Doro小帮手" currentVersion)
 doroGui.Add("Button", "Default w80", "帮助").OnEvent("Click", ClickOnHelp)
 doroGui.Add("Button", "Default w80", "检查更新").OnEvent("Click", ClickOnCheckForUpdate)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate), "启动时自动检查更新`n(确保能连上github；下次启动开始生效)").OnEvent("Click", ClickAutoCheckUpdate)
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
 doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
-doroGui.Add("GroupBox", "w300 h435 YP+40", "想让Doro帮你做什么呢？")
+doroGui.Add("GroupBox", "w300 h450 YP+40", "想让Doro帮你做什么呢？")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCashShop), "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop), "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
-doroGui.Add("Text",, "购买几本属性书？")
+doroGui.Add("Text", "XP+15 Y+M", "购买几本属性书？")
 doroGui.Add("DropDownList", "Choose" NumOfBookToLabel(numOfBook), [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyWeapon), "普通商店购买公司武器熔炉").OnEvent("Click", ClickOnCompanyWeapon)
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedExpedtion), "派遣远征").OnEvent("Click", ClickOnExpedition)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyWeapon), "购买公司武器熔炉").OnEvent("Click", ClickOnCompanyWeapon)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedExpedtion) " XP-15 Y+M", "派遣远征").OnEvent("Click", ClickOnExpedition)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFriendPoint), "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedSimulationRoom), "模拟室5C(普通关卡需要快速战斗)").OnEvent("Click", ClickOnSimulationRoom)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedRookieArena), "新人竞技场n次(请点开快速战斗)").OnEvent("Click", ClickOnRookieArena)
-doroGui.Add("Text",, "新人竞技场打几次？")
+doroGui.Add("Text", "XP+15 Y+M", "新人竞技场打几次？")
 doroGui.Add("DropDownList", "Choose" NumOfBattleToLabel(numOfBattle), [2, 3, 4, 5]).OnEvent("Change", ChangeOnNumOfBattle)
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedLoveTalking), "咨询n位妮姬(可以通过收藏改变妮姬排序)").OnEvent("Click", ClickOnLoveTalking)
-doroGui.Add("Text",, "咨询几位妮姬？")
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedLoveTalking) " XP-15 Y+M", "咨询n位妮姬(可以通过收藏改变妮姬排序)").OnEvent("Click", ClickOnLoveTalking)
+doroGui.Add("Text", "XP+15 Y+M", "咨询几位妮姬？")
 doroGui.Add("DropDownList", "Choose" NumOfLoveTalkingToLabel(numOfLoveTalking), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).OnEvent("Change", ChangeOnNumOfLoveTalking)
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedTribeTower), "爬塔1次(蹭每日任务)").OnEvent("Click", ClickOnTribeTower)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedLongTalk), "若图鉴未满，则进行详细咨询").OnEvent("Click", ClickOnLongTalk)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedTribeTower) " XP-15 Y+M", "爬塔1次(蹭每日任务)").OnEvent("Click", ClickOnTribeTower)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyTower), "爬企业塔(勾选此条则上条无效)").OnEvent("Click", ClickOnCompanyTower)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedInterception), "使用对应编队进行异常拦截自动战斗`n（不勾选则在异拦界面停止）").OnEvent("Click", ClickOnInterception)
-doroGui.Add("Text",, "自动打哪个异拦boss？(勾选上条才生效)")
+doroGui.Add("Text", "XP+15 Y+M", "自动打哪个异拦boss？(勾选上条才生效)")
 doroGui.Add("DropDownList", "Choose" InterceptionBossToLabel(InterceptionBoss), ["克拉肯(石)，编队1", "过激派(头)，编队2", "镜像容器(手)，编队3", "茵迪维利亚(衣)，编队4", "死神(脚)，编队5"]).OnEvent("Change", ChangeOnInterceptionBoss)
 doroGui.Add("Button", "Default w80 XP+100 YP+40", "DORO!").OnEvent("Click", ClickOnDoro)
 doroGui.Show()
