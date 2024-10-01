@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.10"
+currentVersion := "v0.1.11"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -149,6 +149,11 @@ Login()
 
         if UserCheckColor([1965, 1871], [1321, 1317], ["0x00A0EB", "0xF7F7F7"], scrRatio) {
             UserClick(2191, 1350, scrRatio)
+            Sleep sleepTime
+        }
+
+        if UserCheckColor([1720, 2111], [1539, 1598], ["0x00AEFF", "0x00AEFF"], scrRatio) {
+            UserClick(1905, 1568, scrRatio)
             Sleep sleepTime
         }
 
@@ -358,7 +363,7 @@ CashShop()
     desiredColor := ["0x0DC2F4", "0x3B3E41"]
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
-        if UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+        if UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) or UserCheckColor([2047], [1677], ["0x9A9B9A"], scrRatio) {
             UserClick(1789, 1387, scrRatio)
             Sleep sleepTime
             UserClick(1789, 1387, scrRatio)
@@ -384,7 +389,7 @@ CashShop()
     }
 
     Sleep sleepTime
-    if UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) {
+    if UserCheckColor([2047], [1677], ["0x00A0EB"], scrRatio) or UserCheckColor([2047], [1677], ["0x9A9B9A"], scrRatio) {
         UserClick(1789, 1387, scrRatio)
         Sleep sleepTime
         UserClick(1789, 1387, scrRatio)
@@ -399,9 +404,9 @@ CashShop()
 
     delta := false
 
-    stdCkptX := [1093]
-    stdCkptY := [480]
-    desiredColor := ["0xD8D9DA"]
+    stdCkptX := [52]
+    stdCkptY := [464]
+    desiredColor := ["0xF7FCFD"]
 
     if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
         delta := true
@@ -431,13 +436,22 @@ CashShop()
         }
     }
 
+    del := 336
+
+    stdCkptX := [1311]
+    stdCkptY := [612]
+    desiredColor := ["0xA0A0AC"]
+
+    if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+        del := 0
+
     ;每日
-    stdTargetX := 545
+    stdTargetX := 545 - del
     stdTargetY := 610
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    stdCkptX := [431]
+    stdCkptX := [431 - del]
     stdCkptY := [594]
     desiredColor := ["0x0EC7F5"]
 
@@ -460,12 +474,12 @@ CashShop()
     Sleep sleepTime // 2
 
     ;每周
-    stdTargetX := 878
+    stdTargetX := 878 - del
     stdTargetY := 612
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    stdCkptX := [769]
+    stdCkptX := [769 - del]
     stdCkptY := [600]
     desiredColor := ["0x0CC8F4"]
 
@@ -488,12 +502,12 @@ CashShop()
     Sleep sleepTime // 2
 
     ;每月
-    stdTargetX := 1211
+    stdTargetX := 1211 - del
     stdTargetY := 612
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    stdCkptX := [1114]
+    stdCkptX := [1114 - del]
     stdCkptY := [600]
     desiredColor := ["0x0CC8F4"]
 
@@ -3295,11 +3309,6 @@ ClickOnDoro(*)
 {
     WriteSettings()
 
-    if !A_IsAdmin {
-        MsgBox "请以管理员身份运行Doro"
-        ExitApp
-    }
-
     title := "勝利女神：妮姬"
     try {
         WinGetClientPos ,, &userScreenW, &userScreenH, "勝利女神：妮姬"
@@ -3307,49 +3316,57 @@ ClickOnDoro(*)
         title := "ahk_exe nikke.exe"
     }
 
-    WinGetClientPos ,, &userScreenW, &userScreenH, title
-    global scrRatio
-    scrRatio := userScreenW / stdScreenW
+    numNikke := WinGetCount(title)
 
-    nikkeID := WinWait(title)
-    WinActivate nikkeID
+    loop numNikke {
 
-    Login()
+        nikkeID := WinGetIDLast(title)
 
-    if isCheckedOutposeDefence
-        OutpostDefence()
+        WinGetClientPos ,, &userScreenW, &userScreenH, nikkeID
+        global scrRatio
+        scrRatio := userScreenW / stdScreenW
 
-    if isCheckedCashShop
-        CashShop()
+        ;nikkeID := WinWait(title)
+        WinActivate nikkeID
 
-    if isCheckedFreeShop
-        FreeShop(numOfBook)
+        Login()
 
-    if isCheckedExpedtion
-        Expedition()
+        if isCheckedOutposeDefence
+            OutpostDefence()
 
-    if isCheckedFriendPoint
-        FriendPoint()
+        if isCheckedCashShop
+            CashShop()
 
-    if isCheckedSimulationRoom
-        SimulationRoom()
+        if isCheckedFreeShop
+            FreeShop(numOfBook)
 
-    if isCheckedRookieArena
-        RookieArena(numOfBattle)
+        if isCheckedExpedtion
+            Expedition()
 
-    if isCheckedLoveTalking
-        LoveTalking(numOfLoveTalking)
+        if isCheckedFriendPoint
+            FriendPoint()
 
-    if isCheckedTribeTower && !isCheckedCompanyTower
-        TribeTower()
+        if isCheckedSimulationRoom
+            SimulationRoom()
 
-    if isCheckedCompanyTower
-        CompanyTower()
+        if isCheckedRookieArena
+            RookieArena(numOfBattle)
 
-    if isCheckedOutposeDefence
-        OutpostDefence()
+        if isCheckedLoveTalking
+            LoveTalking(numOfLoveTalking)
 
-    EnterInterception()
+        if isCheckedTribeTower && !isCheckedCompanyTower
+            TribeTower()
+
+        if isCheckedCompanyTower
+            CompanyTower()
+
+        if isCheckedOutposeDefence
+            OutpostDefence()
+
+        EnterInterception()
+
+    }
 
     if isBoughtTrash == 0 
         MsgBox "协同作战商店似乎已经刷新了，快去看看吧"
@@ -3538,6 +3555,10 @@ isBoughtTrash := 1
 }
 */
 
+if !A_IsAdmin {
+    MsgBox "请以管理员身份运行Doro"
+    ExitApp
+}
 
 ;读取设置
 SetWorkingDir A_ScriptDir
@@ -3593,7 +3614,7 @@ doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyTower), "爬企业塔(
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedInterception), "使用对应编队进行异常拦截自动战斗`n（不勾选则在异拦界面停止）").OnEvent("Click", ClickOnInterception)
 doroGui.Add("Text", "XP+15 Y+M", "自动打哪个异拦boss？(勾选上条才生效)")
 doroGui.Add("DropDownList", "Choose" InterceptionBossToLabel(InterceptionBoss), ["克拉肯(石)，编队1", "过激派(头)，编队2", "镜像容器(手)，编队3", "茵迪维利亚(衣)，编队4", "死神(脚)，编队5"]).OnEvent("Change", ChangeOnInterceptionBoss)
-doroGui.Add("Button", "Default w80 XP+100 YP+40", "DORO!").OnEvent("Click", ClickOnDoro)
+doroGui.Add("Button", "Default w80 XP+80 YP+40", "DORO!").OnEvent("Click", ClickOnDoro)
 doroGui.Show()
 
 ^1::{
