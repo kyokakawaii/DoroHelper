@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.11"
+currentVersion := "v0.1.12"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -1289,6 +1289,18 @@ SimulationRoom()
         }
     }
 
+    stdCkptX := [1682]
+    stdCkptY := [1863]
+    desiredColor := ["0x000000"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "开始模拟失败！"
+            ExitApp
+        }
+    }
+
     ;1C-5C
     loop 5 {
         ;选择最右边的关卡
@@ -1347,9 +1359,9 @@ SimulationRoom()
                 }
             }
 
-            Sleep 1500 ;kkk
+            Sleep 2000 ;kkk
             if sleepTime <= 1000
-                Sleep 750
+                Sleep 250
 
             ;点击不选择
             deltaY := 0
@@ -1400,9 +1412,9 @@ SimulationRoom()
             }
         }
         else {
-            Sleep 1500 ;kkk
+            Sleep 2000 ;kkk
             if sleepTime <= 1000
-                Sleep 750
+                Sleep 250
 
             stdCkptX := [1636, 2053]
             stdCkptY := [1991, 1991]
@@ -1505,7 +1517,7 @@ SimulationRoom()
                     UserClick(stdTargetX, stdTargetY, scrRatio)
                     Sleep sleepTime // 2
                     UserClick(stdTargetX, stdTargetY, scrRatio)
-                    Sleep sleepTime // 2
+                    Sleep sleepTime
                     UserClick(stdTargetX, stdTargetY, scrRatio)
                     Sleep sleepTime
                     UserClick(stdTargetX, stdTargetY, scrRatio)
