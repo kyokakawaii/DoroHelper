@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.12"
+currentVersion := "v0.1.13"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -109,21 +109,64 @@ CheckForUpdate()
 ;functions
 UserClick(sX, sY, k)
 {
-    uX := Integer(sX * k)
-    uY := Integer(sY * k)
+    uX := Round(sX * k)
+    uY := Round(sY * k)
     Send "{Click " uX " " uY "}"
 }
 
 
-UserCheckColor(sX, sY, sC, k) {
+UserCheckColor(sX, sY, sC, k)
+{
     loop sX.Length {
-        uX := Integer(sX[A_Index] * k)
-        uY := Integer(sY[A_Index] * k)
+        uX := Round(sX[A_Index] * k)
+        uY := Round(sY[A_Index] * k)
         uC := PixelGetColor(uX, uY)
         if (!IsSimilarColor(uC, sC[A_Index]))
             return 0
     }
     return 1
+}
+
+isAutoOff(sX, sY, k)
+{
+    uX := Round(sX * k)
+    uY := Round(sY * k)
+    uC := PixelGetColor(uX, uY)
+
+    r := Format("{:d}", "0x" . substr(uC, 3, 2))
+    g := Format("{:d}", "0x" . substr(uC, 5, 2))
+    b := Format("{:d}", "0x" . substr(uC, 7, 2))
+
+    if Abs(r - g) < 10 && Abs(r - b) < 10 && Abs(g - b) < 10
+        return true
+
+    return false
+}
+
+
+autoBurstOn := false
+autoAimOn := false
+
+CheckAutoBattle()
+{
+    global autoBurstOn
+    global autoAimOn
+
+    if !autoAimOn && UserCheckColor([216], [160], ["0xFFFFFF"], scrRatio) {
+        if isAutoOff(60, 57, scrRatio) {
+            UserClick(60, 71, scrRatio)
+            Sleep sleepTime
+        }
+        autoAimOn := true
+    }
+
+    if !autoBurstOn && UserCheckColor([216], [160], ["0xFFFFFF"], scrRatio) {
+        if isAutoOff(202, 66, scrRatio) {
+            Send "{Tab}"
+            Sleep sleepTime
+        }
+        autoBurstOn := true 
+    }
 }
 
 
@@ -157,7 +200,7 @@ Login()
             Sleep sleepTime
         }
 
-        if A_Index > waitTolerance * 20 {
+        if A_Index > waitTolerance * 50 {
             MsgBox "登录失败！"
             ExitApp
         }
@@ -434,6 +477,22 @@ CashShop()
             MsgBox "进入礼包页面失败！"
             ExitApp
         }
+    }
+
+    stdCkptX := [514]
+    stdCkptY := [1018]
+    desiredColor := ["0xF2F8FC"]
+
+    if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        stdTargetX := stdTargetX - 172
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime // 2
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime // 2
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime // 2
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime // 2
     }
 
     del := 336
@@ -1704,8 +1763,9 @@ SimulationRoom()
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         ;UserClick(stdTargetX, stdTargetY - 300, scrRatio)
+        CheckAutoBattle()
         Sleep sleepTime
-        if A_Index > waitTolerance * 3 {
+        if A_Index > waitTolerance * 8 {
             MsgBox "模拟室boss战异常！"
             ExitApp
         }
@@ -2234,7 +2294,7 @@ LoveTalking(times)
         while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
             UserClick(stdTargetX, stdTargetY, scrRatio)
             Sleep sleepTime
-            if A_Index + numOfTalked >= times
+            if A_Index + numOfTalked >= times + 2
                 break 2
             if A_Index > waitTolerance {
                 MsgBox "咨询失败！"
@@ -2607,6 +2667,7 @@ CompanyTower()
         ;等待战斗结束
         WaitForBattleEnd:
         while !(MissionCompleted() || MissionFailed() || MissionEnded()) {
+            CheckAutoBattle()
             Sleep sleepTime
             if A_Index > waitTolerance * 20 {
                 MsgBox "企业塔自动战斗失败！"
@@ -2982,6 +3043,7 @@ EnterInterception()
         desiredColor := ["0xE6E6E6", "0xE6E6E6", "0x000000"]
 
         while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+            CheckAutoBattle()
             Sleep sleepTime
             if A_Index > waitTolerance * 20 {
                 MsgBox "自动战斗失败！"
@@ -3293,7 +3355,7 @@ ClickOnHelp(*)
     ############################################# 
     要求：
 
-    - 【设定-画质-全屏幕模式 + 16:9的显示器比例】   或    【16:9的窗口模式（窗口别拉太小，否则像素识别可能出现误差）】
+    - 【设定-画质-全屏幕模式 + 16:9的显示器比例】（推荐）   或    【16:9的窗口模式（窗口尽量拉大，否则像素识别可能出现误差）】
     - 设定-画质-开启光晕效果
     - 设定-画质-开启颜色分级
     - 游戏语言设置为简体中文
@@ -3303,7 +3365,7 @@ ClickOnHelp(*)
     ############################################# 
     步骤：
 
-    -打开NIKKE启动器。点击启动。等右下角腾讯ACE反作弊系统扫完，NIKKE主程序中央SHIFT UP logo出现之后，再切出来点击“DORO!”按钮。如果你看到鼠标开始在左下角连点，那就代表启动成功了。（不行的话手动点击一下NIKKE，让它成为活跃窗口。）然后就可以悠闲地去泡一杯咖啡，或者刷一会儿手机，等待Doro完成工作了。
+    -打开NIKKE启动器。点击启动。等右下角腾讯ACE反作弊系统扫完，NIKKE主程序中央SHIFT UP logo出现之后，再切出来点击“DORO!”按钮。如果你看到鼠标开始在左下角连点，那就代表启动成功了。然后就可以悠闲地去泡一杯咖啡，或者刷一会儿手机，等待Doro完成工作了。
     -也可以在游戏处在大厅界面时（有看板娘的页面）切出来点击“DORO!”按钮启动程序。
     -游戏需要更新的时候请更新完再使用Doro。
 
@@ -3352,6 +3414,9 @@ ClickOnDoro(*)
         if isCheckedFreeShop
             FreeShop(numOfBook)
 
+        if isCheckedOutposeDefence
+            OutpostDefence()
+
         if isCheckedExpedtion
             Expedition()
 
@@ -3372,9 +3437,6 @@ ClickOnDoro(*)
 
         if isCheckedCompanyTower
             CompanyTower()
-
-        if isCheckedOutposeDefence
-            OutpostDefence()
 
         EnterInterception()
 
