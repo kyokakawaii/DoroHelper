@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.13"
+currentVersion := "v0.1.14"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -386,6 +386,10 @@ OutpostDefence()
         if A_Index > waitTolerance {
             MsgBox "前哨基地防御异常！"
             ExitApp
+        }
+        if A_Index > 10 {
+            BackToHall()
+            goto Start
         }
     }
 }
@@ -2483,9 +2487,10 @@ MissionFailed()
 {
     stdCkptX := [2306, 1920, 1590, 1560]
     stdCkptY := [702, 1485, 1489, 1473]
-    desiredColor := ["0xB71013", "0xE9E9E7", "0x161515", "0xE9E9E7"]
+    desiredColor1 := ["0xB71013", "0xE9E9E7", "0x161515", "0xE9E9E7"]
+    desiredColor2 := ["0xAD080B", "0xE9E9E7", "0x161515", "0xE9E9E7"]
 
-    if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio)
+    if UserCheckColor(stdCkptX, stdCkptY, desiredColor1, scrRatio) or UserCheckColor(stdCkptX, stdCkptY, desiredColor2, scrRatio)
         return true
     else
         return false
