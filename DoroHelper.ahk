@@ -3376,6 +3376,7 @@ ClickOnHelp(*)
 
     ############################################# 
     其他:
+    
     -检查是否发布了新版本。
     -如果出现死循环，提高点击间隔可以解决80%的问题。
     -如果你的电脑配置较好的话，或许可以尝试降低点击间隔。
@@ -3396,6 +3397,11 @@ ClickOnDoro(*)
     }
 
     numNikke := WinGetCount(title)
+
+    if numNikke = 0 {
+        MsgBox "未检测到NIKKE主程序"
+        ExitApp
+    }
 
     loop numNikke {
 
@@ -3664,6 +3670,9 @@ if isCheckedAutoCheckUpdate {
 
 ;创建gui
 doroGui := Gui(, "Doro小帮手" currentVersion)
+doroGui.SetFont("s15")
+doroGui.Add("Link",, '<a href="https://github.com/kyokakawaii/DoroHelper">项目地址</a>')
+doroGui.SetFont()
 doroGui.Add("Button", "Default w80", "帮助").OnEvent("Click", ClickOnHelp)
 doroGui.Add("Button", "Default w80", "检查更新").OnEvent("Click", ClickOnCheckForUpdate)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate), "启动时自动检查更新`n(确保能连上github；下次启动开始生效)").OnEvent("Click", ClickAutoCheckUpdate)
@@ -3671,7 +3680,7 @@ doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
 doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
-doroGui.Add("GroupBox", "w300 h450 YP+40", "想让Doro帮你做什么呢？")
+doroGui.Add("GroupBox", "w300 h545 YP+40", "想让Doro帮你做什么呢？")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCashShop), "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop), "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
