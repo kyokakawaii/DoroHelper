@@ -615,6 +615,36 @@ CashShop()
 
 ;=============================================================
 ;3: 免费商店
+BuyThisBook(coor, k)
+{
+    uX := Round(coor[1] * k)
+    uY := Round(coor[2] * k)
+
+    uC := PixelGetColor(uX, uY)
+
+    R := Format("{:d}", "0x" . substr(uC, 3, 2))
+    G := Format("{:d}", "0x" . substr(uC, 5, 2))
+    B := Format("{:d}", "0x" . substr(uC, 7, 2))
+
+    if B > G and B > R {
+        return isCheckedBook[2]
+    }
+
+    if G > R and G > B {
+        return isCheckedBook[3]
+    }
+
+    if R > G and G > B and G > Format("{:d}", "0x50") {
+        return isCheckedBook[5]
+    }
+
+    if R > B and B > G and B > Format("{:d}", "0x50") {
+        return isCheckedBook[4]
+    }
+
+    return isCheckedBook[1]
+}
+
 FreeShop(numOfBook)
 {
     ;进入商店
@@ -833,7 +863,7 @@ FreeShop(numOfBook)
         desiredColor := ["0x127CD7"]
 
         ;如果今天没买过
-        if !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        if !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) and BuyThisBook([378, 1210], scrRatio) {
             stdTargetX := 384
             stdTargetY := 1486
             UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -883,7 +913,7 @@ FreeShop(numOfBook)
         stdCkptY := [1305]
         desiredColor := ["0x137CD5"]
 
-        if !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        if !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) and BuyThisBook([702, 1210], scrRatio) {
             stdTargetX := 702
             stdTargetY := 1484
             UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -933,7 +963,7 @@ FreeShop(numOfBook)
         stdCkptY := [1304]
         desiredColor := ["0x147BD4"]
 
-        if !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        if !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) and BuyThisBook([1025, 1210], scrRatio) {
             stdTargetX := 1030
             stdTargetY := 1485
             UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -3297,6 +3327,36 @@ ClickAutoCheckUpdate(*)
     isCheckedAutoCheckUpdate := 1 - isCheckedAutoCheckUpdate
 }
 
+ClickOnFireBook(*)
+{
+    global isCheckedBook
+    isCheckedBook[1] := 1 - isCheckedBook[1]
+}
+
+ClickOnWaterBook(*)
+{
+    global isCheckedBook
+    isCheckedBook[2] := 1 - isCheckedBook[2]
+}
+
+ClickOnWindBook(*)
+{
+    global isCheckedBook
+    isCheckedBook[3] := 1 - isCheckedBook[3]
+}
+
+ClickOnElecBook(*)
+{
+    global isCheckedBook
+    isCheckedBook[4] := 1 - isCheckedBook[4]
+}
+
+ClickOnIronBook(*)
+{
+    global isCheckedBook
+    isCheckedBook[5] := 1 - isCheckedBook[5]
+}
+
 ChangeOnNumOfBook(GUICtrl, *)
 {
     global numOfBook
@@ -3532,6 +3592,11 @@ WriteSettings()
     IniWrite(isCheckedCompanyTower, "settings.ini", "section1", "isCheckedCompanyTower")
     IniWrite(isCheckedLongTalk, "settings.ini", "section1", "isCheckedLongTalk")
     IniWrite(isCheckedAutoCheckUpdate, "settings.ini", "section1", "isCheckedAutoCheckUpdate")
+    IniWrite(isCheckedBook[1], "settings.ini", "section1", "isCheckedBook[1]")
+    IniWrite(isCheckedBook[2], "settings.ini", "section1", "isCheckedBook[2]")
+    IniWrite(isCheckedBook[3], "settings.ini", "section1", "isCheckedBook[3]")
+    IniWrite(isCheckedBook[4], "settings.ini", "section1", "isCheckedBook[4]")
+    IniWrite(isCheckedBook[5], "settings.ini", "section1", "isCheckedBook[5]")
 }
 
 
@@ -3557,6 +3622,7 @@ LoadSettings()
     global isCheckedCompanyTower
     global isCheckedLongTalk
     global isCheckedAutoCheckUpdate
+    global isCheckedBook
 
     sleepTime := IniRead("settings.ini", "section1", "sleepTime")
     colorTolerance := IniRead("settings.ini", "section1", "colorTolerance")
@@ -3608,6 +3674,41 @@ LoadSettings()
     catch as err {
         IniWrite(isCheckedAutoCheckUpdate, "settings.ini", "section1", "isCheckedAutoCheckUpdate")
     }
+
+    try {
+        isCheckedBook[1] := IniRead("settings.ini", "section1", "isCheckedBook[1]")
+    }
+    catch as err {
+        IniWrite(isCheckedBook[1], "settings.ini", "section1", "isCheckedBook[1]")
+    }
+
+    try {
+        isCheckedBook[2] := IniRead("settings.ini", "section1", "isCheckedBook[2]")
+    }
+    catch as err {
+        IniWrite(isCheckedBook[2], "settings.ini", "section1", "isCheckedBook[2]")
+    }
+
+    try {
+        isCheckedBook[3] := IniRead("settings.ini", "section1", "isCheckedBook[3]")
+    }
+    catch as err {
+        IniWrite(isCheckedBook[3], "settings.ini", "section1", "isCheckedBook[3]")
+    }
+
+    try {
+        isCheckedBook[4] := IniRead("settings.ini", "section1", "isCheckedBook[4]")
+    }
+    catch as err {
+        IniWrite(isCheckedBook[4], "settings.ini", "section1", "isCheckedBook[4]")
+    }
+
+    try {
+        isCheckedBook[5] := IniRead("settings.ini", "section1", "isCheckedBook[5]")
+    }
+    catch as err {
+        IniWrite(isCheckedBook[5], "settings.ini", "section1", "isCheckedBook[5]")
+    }
 }
 
 
@@ -3625,6 +3726,7 @@ isCheckedInterception := 0
 isCheckedCompanyTower := 0
 isCheckedLongTalk := 0
 isCheckedAutoCheckUpdate := 0
+isCheckedBook := [1, 1, 1, 1, 1]
 InterceptionBoss := 1
 numOfBook := 3
 numOfBattle := 5
@@ -3670,8 +3772,8 @@ if isCheckedAutoCheckUpdate {
 
 ;创建gui
 doroGui := Gui(, "Doro小帮手" currentVersion)
-doroGui.SetFont("s15")
-doroGui.Add("Link",, '<a href="https://github.com/kyokakawaii/DoroHelper">项目地址</a>')
+doroGui.SetFont("cred s15")
+doroGui.Add("Link",, '紧急停止按ctrl + 1  <a href="https://github.com/kyokakawaii/DoroHelper">项目地址</a>')
 doroGui.SetFont()
 doroGui.Add("Button", "Default w80", "帮助").OnEvent("Click", ClickOnHelp)
 doroGui.Add("Button", "Default w80", "检查更新").OnEvent("Click", ClickOnCheckForUpdate)
@@ -3680,12 +3782,17 @@ doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
 doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
-doroGui.Add("GroupBox", "w300 h545 YP+40", "想让Doro帮你做什么呢？")
+doroGui.Add("GroupBox", "w300 h660 YP+40", "想让Doro帮你做什么呢？")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " XP+10 YP+20", "领取前哨基地防御奖励").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCashShop), "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop), "普通商店 每日白嫖2次，并购买n本属性书").OnEvent("Click", ClickOnFreeShop)
 doroGui.Add("Text", "XP+15 Y+M", "购买几本属性书？")
 doroGui.Add("DropDownList", "Choose" NumOfBookToLabel(numOfBook), [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[1]), "燃烧书").OnEvent("Click", ClickOnFireBook)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[2]), "水冷书").OnEvent("Click", ClickOnWaterBook)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[3]), "风压书").OnEvent("Click", ClickOnWindBook)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[4]), "电击书").OnEvent("Click", ClickOnElecBook)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[5]), "铁甲书").OnEvent("Click", ClickOnIronBook)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyWeapon), "购买公司武器熔炉").OnEvent("Click", ClickOnCompanyWeapon)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedExpedtion) " XP-15 Y+M", "派遣远征").OnEvent("Click", ClickOnExpedition)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFriendPoint), "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
