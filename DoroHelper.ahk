@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.17.2"
+currentVersion := "v0.1.17.3"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -3312,16 +3312,15 @@ Mission()
             ExitApp
         }
     }
-
-
     stdTargetX := 2286 
     stdTargetY := 1935
     x0 := 1512 ;用于遍历任务
     y0 := 395 
-    Sleep sleepTime
+    
     while UserCheckColor([1365,2087], [1872,1997], ["0xF5F5F5", "0xF5F5F5"], scrRatio) { ;检测是否在任务界面
         Sleep sleepTime
         UserClick(x0, y0, scrRatio) ;点任务标题
+        Sleep sleepTime
         if !UserCheckColor([1365,2087], [1872,1997], ["0xF5F5F5", "0xF5F5F5"], scrRatio) { ;退出
             break
         }
