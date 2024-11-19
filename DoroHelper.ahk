@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.17"
+currentVersion := "v0.1.17.2"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -3264,15 +3264,14 @@ Mail()
         }
     }
 
-    stdCkptX := [2344]
-    stdCkptY := [456]
-    desiredColor := ["0x2B4160"] ;检测深青色的刷新按钮
-    stdTargetX := 2067
-    stdTargetY := 1830
-    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+    stdCkptX := [2037]
+    stdCkptY := [1797]
+    desiredColor := ["0x9E9B9A"] ;检测灰色的领取按钮
+    stdTargetX := 2037
+    stdTargetY := 1797
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;不是灰色就一直点全部领取
         Sleep sleepTime
-        UserClick(stdTargetX, stdTargetY, scrRatio) ;检测邮箱点全部领取
-        break ;需要一个领取成功的截图优化逻辑
     }
 
     stdCkptX := [64]
@@ -3319,15 +3318,16 @@ Mission()
     stdTargetY := 1935
     x0 := 1512 ;用于遍历任务
     y0 := 395 
+    Sleep sleepTime
     while UserCheckColor([1365,2087], [1872,1997], ["0xF5F5F5", "0xF5F5F5"], scrRatio) { ;检测是否在任务界面
         Sleep sleepTime
         UserClick(x0, y0, scrRatio) ;点任务标题
         if !UserCheckColor([1365,2087], [1872,1997], ["0xF5F5F5", "0xF5F5F5"], scrRatio) { ;退出
             break
         }
-        stdCkptX := [2229]
-        stdCkptY := [1940]
-        desiredColor := ["0xBCBCBC"] 
+        stdCkptX := [2276]
+        stdCkptY := [1899]
+        desiredColor := ["0x7B7C7B"] 
         while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) { ;如果不是灰色就点
             Sleep sleepTime
             UserClick(stdTargetX, stdTargetY, scrRatio) ;点领取
@@ -3681,6 +3681,11 @@ InterceptionBossToLabel(n)
     return String(n)
 }
 
+SaveSettings(*)
+{
+    WriteSettings()
+    MsgBox "设置已保存！"
+}
 
 WriteSettings(*)
 {
@@ -3712,7 +3717,6 @@ WriteSettings(*)
     IniWrite(isCheckedBook[4], "settings.ini", "section1", "isCheckedBook[4]")
     IniWrite(isCheckedBook[5], "settings.ini", "section1", "isCheckedBook[5]")
 }
-
 
 LoadSettings()
 {
@@ -3909,7 +3913,7 @@ doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime),  [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
 doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
-doroGui.Add("Button","R1" , "保存当前设置").OnEvent("Click", WriteSettings)
+doroGui.Add("Button","R1" , "保存当前设置").OnEvent("Click", SaveSettings)
 Tab.UseTab("收获")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " R1.2", "领取前哨基地防御奖励+1次免费歼灭").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCashShop) " R1.2", "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
