@@ -1,4 +1,4 @@
-﻿#Requires AutoHotkey >=v2.0
+#Requires AutoHotkey >=v2.0
 
 #Include %A_ScriptDir%\lib\github.ahk
 
@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.16"
+currentVersion := "v0.1.17.3"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -1274,63 +1274,6 @@ FriendPoint()
     }
 }
 
-
-;=============================================================
-;5.1: 邮箱收取
-Mail()
-{
-    stdTargetX := 3667
-    stdTargetY := 81
-    UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime
-
-    stdCkptX := [64]
-    stdCkptY := [470]
-    desiredColor := ["0xFAA72C"]
-
-    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
-        UserClick(stdTargetX, stdTargetY, scrRatio) ;检测大厅点邮箱
-        Sleep sleepTime
-        if A_Index > waitTolerance {
-            MsgBox "进入邮箱失败1！"
-            ExitApp
-        }
-    }
-
-    stdCkptX := [2344]
-    stdCkptY := [456]
-    desiredColor := ["0x2B4160"]
-    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
-        Sleep sleepTime
-        if A_Index > waitTolerance {
-            MsgBox "进入邮箱失败2！"
-            ExitApp
-        }
-    }
-
-    stdTargetX := 2067 
-    stdTargetY := 1830
-    UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime
-    UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime
-    UserClick(stdTargetX, stdTargetY, scrRatio)
-    Sleep sleepTime
-
-    stdCkptX := [64]
-    stdCkptY := [470]
-    desiredColor := ["0xFAA72C"]
-    stdTargetX := 2394 
-    stdTargetY := 291 
-    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
-        UserClick(stdTargetX, stdTargetY, scrRatio) ;确认领取+返回直到回到大厅
-        Sleep sleepTime
-        if A_Index > waitTolerance {
-            MsgBox "退出邮箱失败！"
-            ExitApp
-        }
-    }
-}
 
 ;=============================================================
 ;6: 模拟室5C
@@ -2861,10 +2804,9 @@ CompanyTower()
     }
 }
 
-
 ;=============================================================
 ;11: 进入异拦
-EnterInterception()
+Interception()
 {
     stdTargetX := 2689
     stdTargetY := 1463
@@ -2915,9 +2857,11 @@ EnterInterception()
         }
     }
 
+    /*
     ;不勾选自动拦截就直接退出
     if !isCheckedInterception
         return
+    */
 
     /*
     stdCkptX := [1917]
@@ -3297,6 +3241,100 @@ EnterInterception()
     */
 }
 
+;=============================================================
+
+;11: 邮箱收取
+Mail()
+{
+    stdTargetX := 3667
+    stdTargetY := 81
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep sleepTime
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"]
+
+    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;检测大厅点邮箱
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入邮箱失败！"
+            ExitApp
+        }
+    }
+
+    stdCkptX := [2037]
+    stdCkptY := [1797]
+    desiredColor := ["0x9E9B9A"] ;检测灰色的领取按钮
+    stdTargetX := 2037
+    stdTargetY := 1797
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;不是灰色就一直点全部领取
+        Sleep sleepTime
+    }
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"]
+    stdTargetX := 2394 
+    stdTargetY := 291 
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;确认领取+返回直到回到大厅
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "退出邮箱失败！"
+            ExitApp
+        }
+    }
+}
+
+
+;=============================================================
+
+;12: 任务收取
+Mission()
+{
+    stdTargetX := 3341
+    stdTargetY := 206
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep sleepTime
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"] 
+
+    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;检测大厅点任务
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入任务失败！"
+            ExitApp
+        }
+    }
+    stdTargetX := 2286 
+    stdTargetY := 1935
+    x0 := 1512 ;用于遍历任务
+    y0 := 395 
+    
+    while UserCheckColor([1365,2087], [1872,1997], ["0xF5F5F5", "0xF5F5F5"], scrRatio) { ;检测是否在任务界面
+        Sleep sleepTime
+        UserClick(x0, y0, scrRatio) ;点任务标题
+        Sleep sleepTime
+        if !UserCheckColor([1365,2087], [1872,1997], ["0xF5F5F5", "0xF5F5F5"], scrRatio) { ;退出
+            break
+        }
+        stdCkptX := [2276]
+        stdCkptY := [1899]
+        desiredColor := ["0x7B7C7B"] 
+        while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) { ;如果不是灰色就点
+            Sleep sleepTime
+            UserClick(stdTargetX, stdTargetY, scrRatio) ;点领取
+        } 
+        x0 := x0 + 280 ;向右切换标题
+    }
+
+}
 
 ClickOnOutpostDefence(*) 
 {
@@ -3332,6 +3370,12 @@ ClickOnMail(*)
 {
     global isCheckedMail
     isCheckedMail := 1 - isCheckedMail
+}
+
+ClickOnMission(*)
+{
+    global isCheckedMission
+    isCheckedMission := 1 - isCheckedMission
 }
 
 ClickOnSimulationRoom(*)
@@ -3554,9 +3598,6 @@ ClickOnDoro(*)
 
         if isCheckedFriendPoint
             FriendPoint()
-        
-        if isCheckedMail
-            Mail()
 
         if isCheckedSimulationRoom
             SimulationRoom()
@@ -3567,14 +3608,20 @@ ClickOnDoro(*)
         if isCheckedLoveTalking
             LoveTalking(numOfLoveTalking)
 
-        if isCheckedTribeTower
+        if isCheckedTribeTower && isCheckedCompanyTower
             TribeTower()
 
         if isCheckedCompanyTower && !isCheckedTribeTower
             CompanyTower()
 
-        EnterInterception()
+        if isCheckedInterception
+            Interception()
 
+        if isCheckedMail
+            Mail()
+
+        if isCheckedMission
+            Mission()
     }
 
     if isBoughtTrash == 0 
@@ -3633,8 +3680,13 @@ InterceptionBossToLabel(n)
     return String(n)
 }
 
+SaveSettings(*)
+{
+    WriteSettings()
+    MsgBox "设置已保存！"
+}
 
-WriteSettings()
+WriteSettings(*)
 {
     IniWrite(sleepTime, "settings.ini", "section1", "sleepTime")
     IniWrite(colorTolerance, "settings.ini", "section1", "colorTolerance")
@@ -3644,6 +3696,7 @@ WriteSettings()
     IniWrite(isCheckedExpedtion, "settings.ini", "section1", "isCheckedExpedtion")
     IniWrite(isCheckedFriendPoint, "settings.ini", "section1", "isCheckedFriendPoint")
     IniWrite(isCheckedMail, "settings.ini", "section1", "isCheckedMail")
+    IniWrite(isCheckedMission, "settings.ini", "section1", "isCheckedMission")
     IniWrite(isCheckedSimulationRoom, "settings.ini", "section1", "isCheckedSimulationRoom")
     IniWrite(isCheckedRookieArena, "settings.ini", "section1", "isCheckedRookieArena")
     IniWrite(isCheckedLoveTalking, "settings.ini", "section1", "isCheckedLoveTalking")
@@ -3664,7 +3717,6 @@ WriteSettings()
     IniWrite(isCheckedBook[5], "settings.ini", "section1", "isCheckedBook[5]")
 }
 
-
 LoadSettings()
 {
     global sleepTime
@@ -3675,6 +3727,7 @@ LoadSettings()
     global isCheckedExpedtion
     global isCheckedFriendPoint
     global isCheckedMail
+    global isCheckedMission
     global isCheckedSimulationRoom
     global isCheckedRookieArena
     global isCheckedLoveTalking
@@ -3697,6 +3750,8 @@ LoadSettings()
     isCheckedFreeShop := IniRead("settings.ini", "section1", "isCheckedFreeShop")
     isCheckedExpedtion := IniRead("settings.ini", "section1", "isCheckedExpedtion")
     isCheckedFriendPoint := IniRead("settings.ini", "section1", "isCheckedFriendPoint")
+    isCheckedMail := IniRead("settings.ini", "section1", "isCheckedMail")
+    isCheckedMission := IniRead("settings.ini", "section1", "isCheckedMission")
     isCheckedSimulationRoom := IniRead("settings.ini", "section1", "isCheckedSimulationRoom")
     isCheckedRookieArena := IniRead("settings.ini", "section1", "isCheckedRookieArena")
     isCheckedLoveTalking := IniRead("settings.ini", "section1", "isCheckedLoveTalking")
@@ -3775,13 +3830,6 @@ LoadSettings()
     catch as err {
         IniWrite(isCheckedBook[5], "settings.ini", "section1", "isCheckedBook[5]")
     }
-
-    try {
-        isCheckedMail := IniRead("settings.ini", "section1", "isCheckedMail")
-    }
-    catch as err {
-        IniWrite(isCheckedMail, "settings.ini", "section1", "isCheckedMail")
-    }
 }
 
 
@@ -3791,16 +3839,17 @@ isCheckedFreeShop := 1
 isCheckedExpedtion := 1
 isCheckedFriendPoint := 1
 isCheckedMail := 1
+isCheckedMission := 1
 isCheckedSimulationRoom := 1
 isCheckedRookieArena := 1
 isCheckedLoveTalking := 1
-isCheckedCompanyWeapon := 1
+isCheckedCompanyWeapon := 0
 isCheckedInterception := 0
 isCheckedCompanyTower := 1
 isCheckedTribeTower := 0
 isCheckedLongTalk := 1
 isCheckedAutoCheckUpdate := 0
-isCheckedBook := [1, 1, 1, 1, 1]
+isCheckedBook := [0, 0, 0, 0, 0]
 InterceptionBoss := 1
 numOfBook := 3
 numOfBattle := 5
@@ -3855,53 +3904,75 @@ doroGui.Add("Link"," R1", '<a href="https://github.com/kyokakawaii/DoroHelper">�
 doroGui.SetFont()
 doroGui.Add("Button", "R1 x+10", "帮助").OnEvent("Click", ClickOnHelp)
 doroGui.Add("Button","R1 x+10","检查更新").OnEvent("Click", ClickOnCheckForUpdate)
-Tab := doroGui.Add("Tab3","xm") ;由于bug只能这样写
-Tab.Add(["doro设置","收获","日常","默认参数"])
+Tab := doroGui.Add("Tab3","xm") ;由于autohotkey有bug只能这样写
+Tab.Add(["doro设置","收获","商店","日常","默认"])
 Tab.UseTab("doro设置")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) "R2", "自动检查更新(确保能连上github)").OnEvent("Click", ClickAutoCheckUpdate)
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime),  [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
 doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
+doroGui.Add("Button","R1" , "保存当前设置").OnEvent("Click", SaveSettings)
 Tab.UseTab("收获")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " R1.2", "领取前哨基地防御奖励+1次免费歼灭").OnEvent("Click", ClickOnOutpostDefence)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCashShop) " R1.2", "领取付费商店免费钻(进不了商店的别选)").OnEvent("Click", ClickOnCashShop)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedExpedtion) " R1.2", "派遣委托").OnEvent("Click", ClickOnExpedition)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFriendPoint) " R1.2", "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedMail) " R1.2", "邮箱收取").OnEvent("Click", ClickOnMail)
-Tab.UseTab("日常")
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop) " R1.2 Section ", "普通商店 每日白嫖2次，并购买手册：").OnEvent("Click", ClickOnFreeShop)
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[1]) " R1.2 XP+15 Y+M", "燃烧").OnEvent("Click", ClickOnFireBook)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedMission) " R1.2", "任务收取").OnEvent("Click", ClickOnMission)
+Tab.UseTab("商店")
+doroGui.Add("Text","R1.2 Section", "普通商店")
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop) " R1.2 xs+15 ", "每日白嫖2次").OnEvent("Click", ClickOnFreeShop)
+doroGui.Add("CheckBox", " R1.2 xs+15", "购买简介个性化礼包")
+doroGui.Add("Text","R1.2 xs", "竞技场商店")
+doroGui.Add("Text","R1.2 xs+15", "购买手册：")
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[1]) " R1.2 xs+15", "燃烧").OnEvent("Click", ClickOnFireBook)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[2]) " R1.2 X+1", "水冷").OnEvent("Click", ClickOnWaterBook)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[3]) " R1.2 X+1", "风压").OnEvent("Click", ClickOnWindBook)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[4]) " R1.2 X+1", "电击").OnEvent("Click", ClickOnElecBook)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedBook[5]) " R1.2 X+1", "铁甲").OnEvent("Click", ClickOnIronBook)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyWeapon) " R1.2 xs+15", "购买公司武器熔炉").OnEvent("Click", ClickOnCompanyWeapon)
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedSimulationRoom) " R1.2 xs", "模拟室5C(普通关卡需要快速战斗)").OnEvent("Click", ClickOnSimulationRoom)
+doroGui.Add("CheckBox", " R1.2", "购买简介个性化礼包")
+doroGui.Add("Text","R1.2 xs Section", "废铁商店（简介个性化礼包和废铁商店还在做）")
+doroGui.Add("Checkbox", " R1.2 xs+15", "购买珠宝")
+doroGui.Add("Text", " R1.2 xs+15", "购买好感券：")
+doroGui.Add("Checkbox", " R1.2 xs+15", "通用")
+doroGui.Add("Checkbox", " R1.2 x+1", "朝圣者")
+doroGui.Add("Checkbox", " R1.2 x+1", "反常")
+doroGui.Add("Checkbox", " R1.2 xs+15", "极乐净土")
+doroGui.Add("Checkbox", " R1.2 x+1", "米西利斯")
+doroGui.Add("Checkbox", " R1.2 x+1", "泰特拉")
+doroGui.Add("Text", " R1.2 xs+15", "购买资源")
+doroGui.Add("Checkbox", " R1.2 xs+15", "信用点+盒")
+doroGui.Add("Checkbox", " R1.2 x+1", "战斗数据辑盒")
+doroGui.Add("Checkbox", " R1.2 x+1", "芯尘盒")
+Tab.UseTab("日常")
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedSimulationRoom) " R1.2", "模拟室5C(普通关卡需要快速战斗)").OnEvent("Click", ClickOnSimulationRoom)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedRookieArena) " R1.2", "新人竞技场(请点开快速战斗)").OnEvent("Click", ClickOnRookieArena)
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedLoveTalking) " " " R1.2 xs Section", "咨询妮姬(可以通过收藏改变妮姬排序)").OnEvent("Click", ClickOnLoveTalking)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedLoveTalking) " " " R1.2 Section", "咨询妮姬(可以通过收藏改变妮姬排序)").OnEvent("Click", ClickOnLoveTalking)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedLongTalk) " R1.2 XP+15 Y+M", "若图鉴未满，则进行详细咨询").OnEvent("Click", ClickOnLongTalk)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedCompanyTower) " R1.2 xs Section", "爬企业塔").OnEvent("Click", ClickOnCompanyTower)
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedTribeTower) " R1.2 XP+15 Y+M", "只完成每日任务，在进入后直接退出").OnEvent("Click", ClickOnTribeTower)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedTribeTower) " R1.2 XP+15 Y+M", "只完成每日任务，在进入后退出").OnEvent("Click", ClickOnTribeTower)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedInterception) " R1.2 xs", "使用对应编队进行异常拦截自动战斗").OnEvent("Click", ClickOnInterception)
-doroGui.Add("Text", "XP+15 Y+M", "打哪个boss？(勾选上条生效，否则停在异拦界面)")
 doroGui.Add("DropDownList", "Choose" InterceptionBossToLabel(InterceptionBoss), ["克拉肯(石)，编队1", "过激派(头)，编队2", "镜像容器(手)，编队3", "茵迪维利亚(衣)，编队4", "死神(脚)，编队5"]).OnEvent("Change", ChangeOnInterceptionBoss)
-Tab.UseTab("默认参数")
-doroGui.Add("Text", , "购买几本属性书？")
+Tab.UseTab("默认")
+doroGui.Add("Text", , "购买几本代码手册？")
 doroGui.Add("DropDownList", "Choose" NumOfBookToLabel(numOfBook), [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
 doroGui.Add("Text", , "新人竞技场打几次？")
 doroGui.Add("DropDownList", "Choose" NumOfBattleToLabel(numOfBattle), [2, 3, 4, 5]).OnEvent("Change", ChangeOnNumOfBattle)
 doroGui.Add("Text", , "咨询几位妮姬？")
 doroGui.Add("DropDownList", "Choose" NumOfLoveTalkingToLabel(numOfLoveTalking), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).OnEvent("Change", ChangeOnNumOfLoveTalking)
 Tab.UseTab()
-doroGui.Add("Button", "Default w80 xm+110", "DORO!").OnEvent("Click", ClickOnDoro)
+doroGui.Add("Button", "Default w80 xm+100", "DORO!").OnEvent("Click", ClickOnDoro)
 doroGui.Show()
 
 ^1::{
     ExitApp
 }
 
-
+^2::{
+    Pause -1
+}
 
 
 
@@ -3944,8 +4015,8 @@ TribeTower()
 ;再次收前哨基地防御奖励(蹭每日任务)
 OutpostDefence()
 
-;进入特拦界面
-EnterInterception()
+;打异常拦截
+Interception()
 
 ;邮箱收取
 Mail()
