@@ -3750,8 +3750,6 @@ LoadSettings()
     isCheckedFreeShop := IniRead("settings.ini", "section1", "isCheckedFreeShop")
     isCheckedExpedtion := IniRead("settings.ini", "section1", "isCheckedExpedtion")
     isCheckedFriendPoint := IniRead("settings.ini", "section1", "isCheckedFriendPoint")
-    isCheckedMail := IniRead("settings.ini", "section1", "isCheckedMail")
-    isCheckedMission := IniRead("settings.ini", "section1", "isCheckedMission")
     isCheckedSimulationRoom := IniRead("settings.ini", "section1", "isCheckedSimulationRoom")
     isCheckedRookieArena := IniRead("settings.ini", "section1", "isCheckedRookieArena")
     isCheckedLoveTalking := IniRead("settings.ini", "section1", "isCheckedLoveTalking")
@@ -3830,6 +3828,20 @@ LoadSettings()
     catch as err {
         IniWrite(isCheckedBook[5], "settings.ini", "section1", "isCheckedBook[5]")
     }
+
+    try {
+        isCheckedMail := IniRead("settings.ini", "section1", "isCheckedMail")
+    }
+    catch as err {
+        IniWrite(isCheckedMail, "settings.ini", "section1", "isCheckedMail")
+    }
+
+    try {
+        isCheckedMission := IniRead("settings.ini", "section1", "isCheckedMission")
+    }
+    catch as err {
+        IniWrite(isCheckedMission, "settings.ini", "section1", "isCheckedMission")
+    }
 }
 
 
@@ -3907,7 +3919,7 @@ doroGui.Add("Button","R1 x+10","检查更新").OnEvent("Click", ClickOnCheckForU
 Tab := doroGui.Add("Tab3","xm") ;由于autohotkey有bug只能这样写
 Tab.Add(["doro设置","收获","商店","日常","默认"])
 Tab.UseTab("doro设置")
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) "R2", "自动检查更新(确保能连上github)").OnEvent("Click", ClickAutoCheckUpdate)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) " R2", "自动检查更新(确保能连上github)").OnEvent("Click", ClickAutoCheckUpdate)
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime),  [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
