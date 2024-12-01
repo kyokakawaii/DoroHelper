@@ -18,7 +18,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.17.3"
+currentVersion := "v0.1.17.4"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -3336,6 +3336,83 @@ Mission()
 
 }
 
+;=============================================================
+
+;13: 通行证收取 单通行证
+Pass()
+{
+    stdTargetX := 3633
+    stdTargetY := 362
+    UserClick(stdTargetX, stdTargetY, scrRatio)
+    Sleep sleepTime
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"] 
+
+    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;检测大厅点通行证
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入通行证失败！"
+            ExitApp
+        }
+    }
+
+    stdCkptX := [2184]
+    stdCkptY := [705]
+    desiredColor := ["0xF9FDFF"] ;检测白色的任务
+    stdTargetX := 2184
+    stdTargetY := 705
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;不是白色就一直点领取
+        Sleep sleepTime
+    }
+
+    stdCkptX := [1866]
+    stdCkptY := [2012]
+    desiredColor := ["0xB8B5B6"] ;检测灰色的全部领取
+    stdTargetX := 1866
+    stdTargetY := 2012
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;不是灰色就一直点领取
+        Sleep sleepTime
+    }
+    stdCkptX := [1625]
+    stdCkptY := [711]
+    desiredColor := ["0xF9FDFF"] ;检测白色的奖励
+    stdTargetX := 1625
+    stdTargetY := 711
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;不是白色就一直点领取
+        Sleep sleepTime
+    }
+
+    stdCkptX := [1866]
+    stdCkptY := [2012]
+    desiredColor := ["0xB8B5B6"] ;检测灰色的全部领取
+    stdTargetX := 1866
+    stdTargetY := 2012
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;不是灰色就一直点领取
+        Sleep sleepTime
+    }
+
+    stdCkptX := [64]
+    stdCkptY := [470]
+    desiredColor := ["0xFAA72C"]
+    stdTargetX := 2418
+    stdTargetY := 185
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio) ;确认领取+返回直到回到大厅
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "退出通行证失败！"
+            ExitApp
+        }
+    }
+}
+
 ClickOnOutpostDefence(*) 
 {
     global isCheckedOutposeDefence
@@ -3376,6 +3453,12 @@ ClickOnMission(*)
 {
     global isCheckedMission
     isCheckedMission := 1 - isCheckedMission
+}
+
+ClickOnPass(*)
+{
+    global isCheckedPass
+    isCheckedPass := 1 - isCheckedPass
 }
 
 ClickOnSimulationRoom(*)
@@ -3622,6 +3705,9 @@ ClickOnDoro(*)
 
         if isCheckedMission
             Mission()
+
+        if isCheckedPass
+            Pass()
     }
 
     if isBoughtTrash == 0 
@@ -3697,6 +3783,7 @@ WriteSettings(*)
     IniWrite(isCheckedFriendPoint, "settings.ini", "section1", "isCheckedFriendPoint")
     IniWrite(isCheckedMail, "settings.ini", "section1", "isCheckedMail")
     IniWrite(isCheckedMission, "settings.ini", "section1", "isCheckedMission")
+    IniWrite(isCheckedPass, "settings.ini", "section1", "isCheckedPass")
     IniWrite(isCheckedSimulationRoom, "settings.ini", "section1", "isCheckedSimulationRoom")
     IniWrite(isCheckedRookieArena, "settings.ini", "section1", "isCheckedRookieArena")
     IniWrite(isCheckedLoveTalking, "settings.ini", "section1", "isCheckedLoveTalking")
@@ -3728,6 +3815,7 @@ LoadSettings()
     global isCheckedFriendPoint
     global isCheckedMail
     global isCheckedMission
+    global isCheckedPass
     global isCheckedSimulationRoom
     global isCheckedRookieArena
     global isCheckedLoveTalking
@@ -3750,8 +3838,6 @@ LoadSettings()
     isCheckedFreeShop := IniRead("settings.ini", "section1", "isCheckedFreeShop")
     isCheckedExpedtion := IniRead("settings.ini", "section1", "isCheckedExpedtion")
     isCheckedFriendPoint := IniRead("settings.ini", "section1", "isCheckedFriendPoint")
-    isCheckedMail := IniRead("settings.ini", "section1", "isCheckedMail")
-    isCheckedMission := IniRead("settings.ini", "section1", "isCheckedMission")
     isCheckedSimulationRoom := IniRead("settings.ini", "section1", "isCheckedSimulationRoom")
     isCheckedRookieArena := IniRead("settings.ini", "section1", "isCheckedRookieArena")
     isCheckedLoveTalking := IniRead("settings.ini", "section1", "isCheckedLoveTalking")
@@ -3830,6 +3916,26 @@ LoadSettings()
     catch as err {
         IniWrite(isCheckedBook[5], "settings.ini", "section1", "isCheckedBook[5]")
     }
+
+    try {
+        isCheckedMail := IniRead("settings.ini", "section1", "isCheckedMail")
+    }
+    catch as err {
+        IniWrite(isCheckedMail, "settings.ini", "section1", "isCheckedMail")
+    }
+
+    try {
+        isCheckedMission := IniRead("settings.ini", "section1", "isCheckedMission")
+    }
+    catch as err {
+        IniWrite(isCheckedMission, "settings.ini", "section1", "isCheckedMission")
+    }
+    try {
+        isCheckedPass := IniRead("settings.ini", "section1", "isCheckedPass")
+    }
+    catch as err {
+        IniWrite(isCheckedPass, "settings.ini", "section1", "isCheckedPass")
+    }
 }
 
 
@@ -3840,6 +3946,7 @@ isCheckedExpedtion := 1
 isCheckedFriendPoint := 1
 isCheckedMail := 1
 isCheckedMission := 1
+isCheckedPass := 1
 isCheckedSimulationRoom := 1
 isCheckedRookieArena := 1
 isCheckedLoveTalking := 1
@@ -3907,7 +4014,7 @@ doroGui.Add("Button","R1 x+10","检查更新").OnEvent("Click", ClickOnCheckForU
 Tab := doroGui.Add("Tab3","xm") ;由于autohotkey有bug只能这样写
 Tab.Add(["doro设置","收获","商店","日常","默认"])
 Tab.UseTab("doro设置")
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) "R2", "自动检查更新(确保能连上github)").OnEvent("Click", ClickAutoCheckUpdate)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) " R2", "自动检查更新(确保能连上github)").OnEvent("Click", ClickAutoCheckUpdate)
 doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime),  [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
 doroGui.Add("Text",, "色差容忍度，能跑就别改")
@@ -3920,6 +4027,7 @@ doroGui.Add("Checkbox", IsCheckedToString(isCheckedExpedtion) " R1.2", "派遣�
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFriendPoint) " R1.2", "好友点数收取").OnEvent("Click", ClickOnFriendPoint)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedMail) " R1.2", "邮箱收取").OnEvent("Click", ClickOnMail)
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedMission) " R1.2", "任务收取").OnEvent("Click", ClickOnMission)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedPass) " R1.2", "通行证收取").OnEvent("Click", ClickOnPass)
 Tab.UseTab("商店")
 doroGui.Add("Text","R1.2 Section", "普通商店")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedFreeShop) " R1.2 xs+15 ", "每日白嫖2次").OnEvent("Click", ClickOnFreeShop)
