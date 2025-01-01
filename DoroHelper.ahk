@@ -15,7 +15,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.19"
+currentVersion := "v0.1.20"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -3284,15 +3284,17 @@ Mission() {
 
 ;=============================================================
 
-;13: 通行证收取
+;13: 通行证收取 兼容双转盘 兼容特殊活动
 
 Pass() {
     OnePass()
     stdCkptX := [3395]
     stdCkptY := [368]
+    stdCkptY1 := [468] ;活动可能偏移
     desiredColor := ["0xFBFFFF"] ;白色的轮换按钮
     stdTargetX := 3395
     stdTargetY := 368
+    stdTargetY1 := 468
     if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {  ;如果轮换按钮存在
         global PassRound
         PassRound := 0
@@ -3314,11 +3316,32 @@ Pass() {
 
     }
 
+    if UserCheckColor(stdCkptX, stdCkptY1, desiredColor, scrRatio) {  ;检测是否偏移
+        global PassRound
+        PassRound := 0
+        while (PassRound < 2) {
+            userClick(stdTargetX, stdTargetY1, scrRatio) ;转一下
+            Sleep sleepTime
+            PassRound := PassRound + 1
+            stdCkptX := [3437]
+            stdCkptY := [438]
+            desiredColor := ["0xFF2712"] ;红点
+            if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) { ;如果转出红点
+                Sleep sleepTime
+                userClick(stdTargetX, stdTargetY1, scrRatio) ;再转一下
+                Sleep sleepTime
+                OnePass()
+                break
+            }
+        }
+
+    }
+
 }
 
 OnePass() { ;执行一次通行证
     stdTargetX := 3633
-    stdTargetY := 362
+    stdTargetY := 405
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
@@ -3337,11 +3360,11 @@ OnePass() { ;执行一次通行证
 
     stdCkptX := [1733]
     stdCkptY := [699]
-    desiredColor := ["0xF1F5F6"] 
+    desiredColor := ["0xF1F5F6"]
     stdTargetX := 2130
     stdTargetY := 699
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) { ;左不是白则点右
-        UserClick(stdTargetX, stdTargetY, scrRatio) 
+        UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
     }
 
@@ -3357,11 +3380,11 @@ OnePass() { ;执行一次通行证
 
     stdCkptX := [2130]
     stdCkptY := [699]
-    desiredColor := ["0xF1F5F6"] 
+    desiredColor := ["0xF1F5F6"]
     stdTargetX := 1733
     stdTargetY := 699
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) { ;右不是白则点左
-        UserClick(stdTargetX, stdTargetY, scrRatio) 
+        UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
     }
 
