@@ -3284,7 +3284,7 @@ Mission() {
 
 ;=============================================================
 
-;13: 通行证收取 兼容双转盘 兼容特殊活动
+;13: 通行证收取 兼容双通行证 兼容特殊活动
 
 Pass() {
     OnePass()
@@ -3979,12 +3979,15 @@ doroGui.Add("Button", "R1 x+10", "检查更新").OnEvent("Click", ClickOnCheckFo
 Tab := doroGui.Add("Tab3", "xm") ;由于autohotkey有bug只能这样写
 Tab.Add(["doro设置", "收获", "商店", "日常", "默认"])
 Tab.UseTab("doro设置")
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) " R2", "自动检查更新(确保能连上github)").OnEvent("Click", ClickAutoCheckUpdate)
-doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
-doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime),  [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
-doroGui.Add("Text",, "色差容忍度，能跑就别改")
-doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
-doroGui.Add("Button","R1" , "保存当前设置").OnEvent("Click", SaveSettings)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) " R2", "自动检查更新(确保能连上github)").OnEvent("Click",
+    ClickAutoCheckUpdate)
+doroGui.Add("Text", , "点击间隔(单位毫秒)，谨慎更改")
+doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change",
+    ChangeOnSleepTime)
+doroGui.Add("Text", , "色差容忍度，能跑就别改")
+doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change",
+    ChangeOnColorTolerance)
+doroGui.Add("Button", "R1", "保存当前设置").OnEvent("Click", SaveSettings)
 Tab.UseTab("收获")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " R1.2", "领取前哨基地防御奖励+1次免费歼灭").OnEvent("Click",
     ClickOnOutpostDefence)
