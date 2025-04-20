@@ -15,7 +15,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.20"
+currentVersion := "v0.1.21"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -1237,7 +1237,8 @@ FriendPoint() {
 
 ;=============================================================
 ;6: 模拟室5C
-SimulationRoom() {
+SimulationRoom()
+{
     stdTargetX := 2689
     stdTargetY := 1463
     UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -1267,7 +1268,7 @@ SimulationRoom() {
             ExitApp
         }
     }
-
+    
     ;进入模拟室
     stdTargetX := 1547
     stdTargetY := 1138
@@ -1287,15 +1288,17 @@ SimulationRoom() {
         }
     }
 
+    ;MsgBox "ok"
+
     ;开始模拟
     stdTargetX := 1917
     stdTargetY := 1274
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    stdCkptX := [1687, 1759]
-    stdCkptY := [1823, 628]
-    desiredColor := ["0x05AFF4", "0x1D1D1C"]
+    stdCkptX := [2054, 2331]
+    stdCkptY := [719, 746]
+    desiredColor := ["0xF8FBFD", "0xF8FBFD"]
 
     while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -1321,16 +1324,17 @@ SimulationRoom() {
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime // 2
 
+    
     ;点击开始模拟
     ;开始模拟
-    stdTargetX := 1891
+    stdTargetX := 2216
     stdTargetY := 1818
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    stdCkptX := [1687, 1759]
-    stdCkptY := [1823, 628]
-    desiredColor := ["0x05AFF4", "0x1D1D1C"]
+    stdCkptX := [1991]
+    stdCkptY := [1814]
+    desiredColor := ["0xFA801A"]
 
     while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -1341,6 +1345,50 @@ SimulationRoom() {
         }
     }
 
+    stdTargetX := 1903
+    stdTargetY := 1369
+    stdCkptX := [304]
+    stdCkptY := [179]
+    desiredColor := ["0x858289"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入buff选择页面失败！"
+            ExitApp
+        }
+    }
+
+    stdCkptX := [1760]
+    yy := 2160
+    stdCkptY := [yy]
+    desiredColor := ["0xDFE1E1"]
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        yy := yy - 30
+        stdCkptY := [yy]
+        if A_Index > waitTolerance {
+            ExitApp
+        }
+    }
+
+    stdTargetX := 1760
+    stdTargetY := yy
+
+    stdCkptX := [2053]
+    stdCkptY := [1933]
+    desiredColor := ["0x2E77C1"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        UserClick(stdTargetX, stdTargetY, scrRatio)
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入战斗准备页面失败！"
+            ExitApp
+        }
+    }
+
+    /*
     stdCkptX := [1682]
     stdCkptY := [1863]
     desiredColor := ["0x000000"]
@@ -1403,8 +1451,7 @@ SimulationRoom() {
             stdCkptY := [1808]
             desiredColor := ["0x05A0E3"]
 
-            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) && !UserCheckColor(stdCkptX, [1808 + 79],
-            desiredColor, scrRatio) {
+            while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) && !UserCheckColor(stdCkptX, [1808 + 79], desiredColor, scrRatio) {
                 Sleep sleepTime
                 if A_Index > waitTolerance {
                     MsgBox "快速战斗失败！"
@@ -1472,7 +1519,7 @@ SimulationRoom() {
             stdCkptX := [1636, 2053]
             stdCkptY := [1991, 1991]
             desiredColor := ["0xE0E2E2", "0x13A1E4"]
-
+    
             ;如果是可以不选择的buff关卡
             if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
                 ;点击不选择
@@ -1604,7 +1651,7 @@ SimulationRoom() {
                         Sleep sleepTime // 2
                         UserClick(stdTargetX, stdTargetY, scrRatio)
                         Sleep sleepTime
-                        */
+                        
                         continue
                     }
 
@@ -1740,6 +1787,7 @@ SimulationRoom() {
             ExitApp
         }
     }
+    */
 
     ;点击进入战斗
     stdTargetX := 2225
@@ -1759,9 +1807,9 @@ SimulationRoom() {
         ;UserClick(stdTargetX, stdTargetY - 300, scrRatio)
         CheckAutoBattle()
         Sleep sleepTime
-        if A_Index > waitTolerance * 8 {
-            MsgBox "模拟室boss战异常！"
-            ExitApp
+        if A_Index > waitTolerance * 2 {
+            ;MsgBox "模拟室boss战异常！"
+            break
         }
     }
 
@@ -1776,8 +1824,7 @@ SimulationRoom() {
     stdCkptY2 := [1556]
     desiredColor := ["0xEFF3F5"]
 
-    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) && !UserCheckColor(stdCkptX2, stdCkptY2,
-        desiredColor, scrRatio) {
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) && !UserCheckColor(stdCkptX2, stdCkptY2, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
         if A_Index > waitTolerance {
@@ -1814,6 +1861,7 @@ SimulationRoom() {
     */
 
     ;点击不选择和确定
+    /*
     tX := 2104
     tY := 1656
     desiredColor := ["0x089FE4"]
@@ -1861,6 +1909,7 @@ SimulationRoom() {
     Sleep sleepTime // 2
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
+    */
 
     ;退回大厅
     stdTargetX := 333
@@ -1881,6 +1930,7 @@ SimulationRoom() {
         }
     }
 }
+
 
 ;=============================================================
 ;7: 新人竞技场打第三位，顺带收50%以上的菜
@@ -3284,7 +3334,7 @@ Mission() {
 
 ;=============================================================
 
-;13: 通行证收取 兼容双转盘 兼容特殊活动
+;13: 通行证收取 兼容双通行证 兼容特殊活动
 
 Pass() {
     OnePass()
@@ -3304,7 +3354,7 @@ Pass() {
             PassRound := PassRound + 1
             stdCkptX := [3437]
             stdCkptY := [338]
-            desiredColor := ["0xFF2712"] ;红点
+            desiredColor := ["0xFE1809"] ;红点
             if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) { ;如果转出红点
                 Sleep sleepTime
                 userClick(stdTargetX, stdTargetY, scrRatio) ;再转一下
@@ -3325,7 +3375,7 @@ Pass() {
             PassRound := PassRound + 1
             stdCkptX := [3437]
             stdCkptY := [438]
-            desiredColor := ["0xFF2712"] ;红点
+            desiredColor := ["0xFE1809"] ;红点
             if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) { ;如果转出红点
                 Sleep sleepTime
                 userClick(stdTargetX, stdTargetY1, scrRatio) ;再转一下
@@ -3979,12 +4029,15 @@ doroGui.Add("Button", "R1 x+10", "检查更新").OnEvent("Click", ClickOnCheckFo
 Tab := doroGui.Add("Tab3", "xm") ;由于autohotkey有bug只能这样写
 Tab.Add(["doro设置", "收获", "商店", "日常", "默认"])
 Tab.UseTab("doro设置")
-doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) " R2", "自动检查更新(确保能连上github)").OnEvent("Click", ClickAutoCheckUpdate)
-doroGui.Add("Text",, "点击间隔(单位毫秒)，谨慎更改")
-doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime),  [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change", ChangeOnSleepTime)
-doroGui.Add("Text",, "色差容忍度，能跑就别改")
-doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change", ChangeOnColorTolerance)
-doroGui.Add("Button","R1" , "保存当前设置").OnEvent("Click", SaveSettings)
+doroGui.Add("Checkbox", IsCheckedToString(isCheckedAutoCheckUpdate) " R2", "自动检查更新(确保能连上github)").OnEvent("Click",
+    ClickAutoCheckUpdate)
+doroGui.Add("Text", , "点击间隔(单位毫秒)，谨慎更改")
+doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change",
+    ChangeOnSleepTime)
+doroGui.Add("Text", , "色差容忍度，能跑就别改")
+doroGui.Add("DropDownList", "Choose" ColorToleranceToLabel(colorTolerance), ["严格", "宽松"]).OnEvent("Change",
+    ChangeOnColorTolerance)
+doroGui.Add("Button", "R1", "保存当前设置").OnEvent("Click", SaveSettings)
 Tab.UseTab("收获")
 doroGui.Add("Checkbox", IsCheckedToString(isCheckedOutposeDefence) " R1.2", "领取前哨基地防御奖励+1次免费歼灭").OnEvent("Click",
     ClickOnOutpostDefence)
