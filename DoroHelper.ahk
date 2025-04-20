@@ -15,7 +15,7 @@ stdScreenH := 2160
 waitTolerance := 50
 colorTolerance := 15
 
-currentVersion := "v0.1.21"
+currentVersion := "v0.1.22"
 usr := "kyokakawaii"
 repo := "DoroHelper"
 
@@ -1934,7 +1934,8 @@ SimulationRoom()
 
 ;=============================================================
 ;7: 新人竞技场打第三位，顺带收50%以上的菜
-RookieArena(times) {
+RookieArena(times)
+{
     ;进入方舟
     stdTargetX := 2689
     stdTargetY := 1463
@@ -1992,11 +1993,11 @@ RookieArena(times) {
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime
 
-    stdCkptX := [1683]
-    stdCkptY := [606]
-    desiredColor := ["0xF7FCFE"]
+    stdCkptX := [1641]
+    stdCkptY := [324]
+    desiredColor := ["0x01D4F6"]
 
-    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+    while UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
         UserClick(stdTargetX, stdTargetY, scrRatio)
         Sleep sleepTime
         if A_Index > waitTolerance {
@@ -2004,6 +2005,20 @@ RookieArena(times) {
             ExitApp
         }
     }
+
+    
+    stdCkptX := [1683]
+    stdCkptY := [606]
+    desiredColor := ["0xF7FCFE"]
+
+    while !UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
+        Sleep sleepTime
+        if A_Index > waitTolerance {
+            MsgBox "进入竞技场失败！"
+            ExitApp
+        }
+    }
+    
 
     ;进入新人竞技场
     stdTargetX := 1647
@@ -2041,7 +2056,7 @@ RookieArena(times) {
 
             return
         }
-
+        
         if A_Index > waitTolerance {
             MsgBox "进入新人竞技场失败！"
             ExitApp
