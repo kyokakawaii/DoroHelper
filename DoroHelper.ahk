@@ -3705,52 +3705,52 @@ ClickOnDoro(*) {
         ;nikkeID := WinWait(title)
         WinActivate nikkeID
 
-        Login()
+        Login() ;登陆到主界面
 
         if isCheckedOutposeDefence
-            OutpostDefence()
+            OutpostDefence() ;前哨基地防御奖励
 
-        if isCheckedCashShop
-            CashShop()
+        if isCheckedCashShop  
+            CashShop() ;付费商店领免费钻
 
-        if isCheckedFreeShop
-            FreeShop(numOfBook)
+        if isCheckedFreeShop 
+            FreeShop(numOfBook) ;普通商店白嫖
 
         if isCheckedOutposeDefence
-            OutpostDefence()
+            OutpostDefence() ;前哨基地防御奖励*2(任务)
 
         if isCheckedExpedtion
-            Expedition()
+            Expedition() ;派遣
 
         if isCheckedFriendPoint
-            FriendPoint()
+            FriendPoint() ;好友点数收取
 
         if isCheckedSimulationRoom
-            SimulationRoom()
+            SimulationRoom() ;模拟室5C(不拿buff)
 
         if isCheckedRookieArena
-            RookieArena(numOfBattle)
+            RookieArena(numOfBattle) ;新人竞技场n次打第三位，顺带收50%以上的菜
 
         if isCheckedLoveTalking
-            LoveTalking(numOfLoveTalking)
+            LoveTalking(numOfLoveTalking) ;;对前n位nikke进行好感度咨询(可以通过收藏把想要咨询的nikke排到前面)
 
-        if isCheckedTribeTower && isCheckedCompanyTower
-            TribeTower()
+        if isCheckedTribeTower && isCheckedCompanyTower 
+            TribeTower() ;爬塔一次(蹭每日任务)
 
         if isCheckedCompanyTower && !isCheckedTribeTower
-            CompanyTower()
+            CompanyTower() ;爬塔
 
         if isCheckedInterception
-            Interception()
+            Interception() ;打异常拦截
 
-        if isCheckedMail
-            Mail()
+        if isCheckedMail 
+            Mail() ;邮箱收取
 
         if isCheckedMission
-            Mission()
+            Mission() ;每日奖励收取
 
         if isCheckedPass
-            Pass()
+            Pass() ;Pass收取
 
     }
 
@@ -4128,48 +4128,3 @@ doroGui.Show()
 ^2:: {
     Pause -1
 }
-
-/*
-;登陆到主界面
-Login()
-
-;前哨基地防御奖励
-OutpostDefence()
-
-;付费商店领免费钻
-CashShop()
-
-;普通商店白嫖
-FreeShop()
-
-;派遣
-Expedition()
-
-;好友点数收取
-FriendPoint()
-
-;模拟室5C(不拿buff)
-SimulationRoom()
-
-RookieArenaTimes := 0
-
-;新人竞技场n次打第三位，顺带收50%以上的菜
-RookieArena(RookieArenaTimes)
-
-LoveTalkingTimes := 10
-
-;对前n位nikke进行好感度咨询(可以通过收藏把想要咨询的nikke排到前面)
-;LoveTalking(LoveTalkingTimes)
-
-;爬塔一次(蹭每日任务)
-TribeTower()
-
-;再次收前哨基地防御奖励(蹭每日任务)
-OutpostDefence()
-
-;打异常拦截
-Interception()
-
-;邮箱收取
-Mail()
-*/
