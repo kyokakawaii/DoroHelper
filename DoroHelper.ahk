@@ -2480,14 +2480,6 @@ ChangeOnNumOfBook(GUICtrl, *) {
     global g_numeric_settings
     g_numeric_settings["NumOfBook"] := GUICtrl.Value - 1
 }
-ChangeOnNumOfBattle(GUICtrl, *) {
-    global g_numeric_settings
-    g_numeric_settings["NumOfBattle"] := GUICtrl.Value + 1
-}
-ChangeOnNumOfLoveTalking(GUICtrl, *) {
-    global g_numeric_settings
-    g_numeric_settings["NumOfLoveTalking"] := GUICtrl.Value
-}
 ChangeOnInterceptionBoss(GUICtrl, *) {
     global g_numeric_settings
     g_numeric_settings["InterceptionBoss"] := GUICtrl.Value
@@ -2626,14 +2618,6 @@ IsCheckedToString(foo) {
 NumOfBookToLabel() {
     global g_numeric_settings
     return String(g_numeric_settings["NumOfBook"] + 1)
-}
-NumOfBattleToLabel() {
-    global g_numeric_settings
-    return String(g_numeric_settings["NumOfBattle"] - 1)
-}
-NumOfLoveTalkingToLabel() {
-    global g_numeric_settings
-    return String(g_numeric_settings["NumOfLoveTalking"])
 }
 InterceptionBossToLabel() {
     global g_numeric_settings
@@ -2810,8 +2794,7 @@ doroGui.Add("Text", " R1.2 x+1", "❌芯尘盒")
 Tab.UseTab("日常")
 AddCheckboxSetting(doroGui, "SimulationRoom", "模拟室5C(普通关卡需要快速战斗)", "R1.2")
 AddCheckboxSetting(doroGui, "RookieArena", "新人竞技场(请点开快速战斗)", "R1.2")
-AddCheckboxSetting(doroGui, "LoveTalking", "咨询妮姬(可以通过收藏改变妮姬排序)", "R1.2 Section") ; 注意 Section 选项用法
-AddCheckboxSetting(doroGui, "LongTalk", "若图鉴未满，则进行详细咨询", "R1.2 XP+15 Y+M")
+AddCheckboxSetting(doroGui, "LoveTalking", "咨询妮姬(可以通过收藏改变妮姬排序)", "R1.2 Section") ; 注意 Section 选项用法（保存此控件位置并定义一个新控件段）
 AddCheckboxSetting(doroGui, "CompanyTower", "爬企业塔", "R1.2 xs Section")
 AddCheckboxSetting(doroGui, "TribeTower", "只完成每日任务，在进入后退出", "R1.2 XP+15 Y+M")
 AddCheckboxSetting(doroGui, "Interception", "使用对应编队进行异常拦截自动战斗", "R1.2 xs")
@@ -2820,11 +2803,6 @@ doroGui.Add("DropDownList", "Choose" InterceptionBossToLabel(), ["克拉肯(石)
 Tab.UseTab("默认")
 doroGui.Add("Text", , "购买几本代码手册？")
 doroGui.Add("DropDownList", "Choose" NumOfBookToLabel(), [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
-doroGui.Add("Text", , "新人竞技场打几次？")
-doroGui.Add("DropDownList", "Choose" NumOfBattleToLabel(), [2, 3, 4, 5]).OnEvent("Change", ChangeOnNumOfBattle)
-doroGui.Add("Text", , "咨询几位妮姬？")
-doroGui.Add("DropDownList", "Choose" NumOfLoveTalkingToLabel(), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).OnEvent("Change",
-    ChangeOnNumOfLoveTalking)
 Tab.UseTab()
 doroGui.Add("Button", "Default w80 xm+100", "DORO!").OnEvent("Click", ClickOnDoro)
 doroGui.Show()
