@@ -2595,7 +2595,8 @@ ClickOnDoro(*) {
     if isBoughtTrash == 0
         MsgBox "协同作战商店似乎已经刷新了，快去看看吧"
     MsgBox "Doro完成任务！" CompanyTowerInfo()
-    ;ExitApp
+    if g_settings["SelfClosing"]
+        ExitApp
     Pause
 }
 SleepTimeToLabel(sleepTime) {
@@ -2681,6 +2682,7 @@ global g_settings := Map(
     "TribeTower", 0,           ; 每日爬塔任务
     "LongTalk", 1,             ; 详细咨询 (若图鉴未满)
     "AutoCheckUpdate", 0,      ; 自动检查更新
+    "SelfClosing", 0,          ; 完成后自动关闭程序
     "BookFire", 0,             ; 手册：燃烧
     "BookWater", 0,            ; 手册：水冷
     "BookWind", 0,             ; 手册：风压
@@ -2749,7 +2751,8 @@ doroGui.Add("Button", "R1 x+10", "检查更新").OnEvent("Click", ClickOnCheckFo
 Tab := doroGui.Add("Tab3", "xm") ;由于autohotkey有bug只能这样写
 Tab.Add(["设置", "收获", "商店", "日常", "默认"])
 Tab.UseTab("设置")
-AddCheckboxSetting(doroGui, "AutoCheckUpdate", "自动检查更新(确保能连上github)", "R2")
+AddCheckboxSetting(doroGui, "AutoCheckUpdate", "自动检查更新(确保能连上github)", "R1.2")
+AddCheckboxSetting(doroGui, "SelfClosing", "任务完成后自动关闭程序", "R1.2")
 doroGui.Add("Text", , "点击间隔(单位毫秒)，谨慎更改")
 doroGui.Add("DropDownList", "Choose" SleepTimeToLabel(sleepTime), [750, 1000, 1250, 1500, 1750, 2000]).OnEvent("Change",
     ChangeOnSleepTime)
