@@ -1226,8 +1226,9 @@ SimulationRoom() {
         }
     }
 }
-;7: 新人竞技场打第三位，顺带收50%以上的菜
-RookieArena(times) {
+
+;7: 新人竞技场收菜
+Arena() {
     ;进入方舟
     stdTargetX := 2689
     stdTargetY := 1463
@@ -1271,6 +1272,9 @@ RookieArena(times) {
     Sleep sleepTime // 2
     UserClick(stdTargetX, stdTargetY, scrRatio)
     Sleep sleepTime // 2
+}
+;新人竞技场
+RookieArena(times) {
     ;进入竞技场
     stdTargetX := 2208
     stdTargetY := 1359
@@ -1382,6 +1386,10 @@ RookieArena(times) {
             ExitApp
         }
     }
+}
+;特殊竞技场
+SpecialArena(times) {
+
 }
 ;8: 对前n位nikke进行好感度咨询(可以通过收藏把想要咨询的nikke排到前面)
 NotAllCollection() {
@@ -1602,7 +1610,7 @@ LoveTalking(times) {
     }
 }
 ;9: 爬塔一次(做每日任务)
-TribeTower() {
+FailTower() {
     stdTargetX := 2689
     stdTargetY := 1463
     UserClick(stdTargetX, stdTargetY, scrRatio)
@@ -2468,6 +2476,10 @@ OnePass() { ;执行一次通行证
     if UserCheckColor(stdCkptX, stdCkptY, desiredColor, scrRatio) {
     }
 }
+;通用塔
+UniversalTower() {
+
+}
 ; 通用函数，用于切换 g_settings Map 中的设置值
 ToggleSetting(settingKey, guiCtrl, *) {
     global g_settings
@@ -2571,18 +2583,21 @@ ClickOnDoro(*) {
             FriendPoint()
         if g_settings["SimulationRoom"]
             SimulationRoom()
-        if g_settings["RookieArena"]
-            RookieArena(g_numeric_settings["NumOfBattle"])
+        if g_settings["Arena"] {
+            Arena() ;收菜
+            if g_settings["RookieArena"] ;新人竞技场
+                RookieArena(g_numeric_settings["NumOfRookieBattle"])
+            if g_settings["SpecialArena"] ;新人竞技场
+                SpecialArena(g_numeric_settings["NumOfSpecialBattle"])
+            else
+                BackToHall()
+        }
         if g_settings["LoveTalking"]
             LoveTalking(g_numeric_settings["NumOfLoveTalking"])
-        if g_settings["CompanyTower"] {
-            if g_settings["TribeTower"]
-                TribeTower() ; 执行每日任务版 (进塔就退)
-            else
-                CompanyTower() ; 执行完整爬塔版
-        } else if g_settings["TribeTower"] {
-            TribeTower() ; 即使 CompanyTower 未勾选，也要执行每日任务版
-        }
+        if g_settings["FailTower"]
+            FailTower()
+        if g_settings["CompanyTower"]
+            CompanyTower()
         if g_settings["Interception"]
             Interception()
         if g_settings["Mail"]
@@ -2591,6 +2606,8 @@ ClickOnDoro(*) {
             Mission()
         if g_settings["Pass"]
             Pass()
+        if g_settings["UniversalTower"]
+            UniversalTower()
     }
     if isBoughtTrash == 0
         MsgBox "协同作战商店似乎已经刷新了，快去看看吧"
@@ -2631,7 +2648,7 @@ WriteSettings(*) {
         IniWrite(value, "settings.ini", "Toggles", key)
     }
     for key, value in g_numeric_settings {
-        IniWrite(value, "settings.ini", "NumericSettings", key) 
+        IniWrite(value, "settings.ini", "NumericSettings", key)
     }
     ; 写入其他独立设置
     IniWrite(sleepTime, "settings.ini", "Other", "sleepTime")
@@ -2639,7 +2656,7 @@ WriteSettings(*) {
 }
 LoadSettings() {
     global g_settings, g_numeric_settings, sleepTime, colorTolerance
-    default_settings := g_settings.Clone() 
+    default_settings := g_settings.Clone()
     ; 从 Map 加载开关设置
     for key, defaultValue in default_settings {
         readValue := IniRead("settings.ini", "Toggles", key, defaultValue)
@@ -2674,12 +2691,15 @@ global g_settings := Map(
     "Mission", 1,              ; 任务
     "Pass", 1,                 ; 通行证
     "SimulationRoom", 1,       ; 模拟室
+    "Arena", 1,                ; 竞技场收菜
     "RookieArena", 1,          ; 新人竞技场
+    "SpecialArena", 1,         ; 特殊竞技场
     "LoveTalking", 1,          ; 咨询
     "CompanyWeapon", 0,        ; 企业武器熔炉 (商店)
     "Interception", 0,         ; 拦截战
     "CompanyTower", 1,         ; 企业塔
-    "TribeTower", 0,           ; 每日爬塔任务
+    "UniversalTower", 1,       ; 通用塔
+    "FailTower", 0,            ; 每日爬塔任务
     "LongTalk", 1,             ; 详细咨询 (若图鉴未满)
     "AutoCheckUpdate", 0,      ; 自动检查更新
     "SelfClosing", 0,          ; 完成后自动关闭程序
@@ -2687,17 +2707,18 @@ global g_settings := Map(
     "BookWater", 0,            ; 手册：水冷
     "BookWind", 0,             ; 手册：风压
     "BookElec", 0,             ; 手册：电击
-    "BookIron", 0,              ; 手册：铁甲
-    ;"CheckBox",0               ; 简介个性化礼包
+    "BookIron", 0,             ; 手册：铁甲
+    ;"CheckBox",0              ; 简介个性化礼包
 )
 ; 其他非简单开关的设置 Map 对象
 global g_numeric_settings := Map(
-    "NumOfBook", 3,         ; 购买手册数量
-    "NumOfBattle", 5,       ; 新人竞技场次数
-    "NumOfLoveTalking", 10, ; 咨询次数
-    "InterceptionBoss", 1    ; 拦截战BOSS选择
+    "NumOfBook", 3,               ; 购买手册数量
+    "NumOfRookieBattle", 5,       ; 新人竞技场次数
+    "NumOfSpecialBattle", 5,       ; 新人竞技场次数
+    "NumOfLoveTalking", 10,       ; 咨询次数
+    "InterceptionBoss", 1         ; 拦截战BOSS选择
 )
-global isBoughtTrash := 1      ; 检测废铁商店
+global isBoughtTrash := 1         ; 检测废铁商店
 ;检测管理员身份
 if !A_IsAdmin {
     MsgBox "请以管理员身份运行Doro"
@@ -2796,15 +2817,18 @@ doroGui.Add("Text", " R1.2 x+1", "❌战斗数据辑盒")
 doroGui.Add("Text", " R1.2 x+1", "❌芯尘盒")
 Tab.UseTab("日常")
 AddCheckboxSetting(doroGui, "SimulationRoom", "模拟室5C(普通关卡需要快速战斗)", "R1.2")
-AddCheckboxSetting(doroGui, "RookieArena", "新人竞技场(请点开快速战斗)", "R1.2")
-AddCheckboxSetting(doroGui, "LoveTalking", "咨询妮姬(可以通过收藏改变妮姬排序)", "R1.2 Section") ; 注意 Section 选项用法（保存此控件位置并定义一个新控件段）
-AddCheckboxSetting(doroGui, "CompanyTower", "爬企业塔", "R1.2 xs Section")
-AddCheckboxSetting(doroGui, "TribeTower", "只完成每日任务，在进入后退出", "R1.2 XP+15 Y+M")
+AddCheckboxSetting(doroGui, "Arena", "竞技场收菜", "R1.2 Section")
+AddCheckboxSetting(doroGui, "RookieArena", "新人竞技场(请点开快速战斗)", "R1.2 XP+15 Y+M")
+AddCheckboxSetting(doroGui, "SpecialArena", "特殊竞技场(请点开快速战斗)", "R1.2 Y+M")
+AddCheckboxSetting(doroGui, "LoveTalking", "咨询妮姬(可以通过收藏改变妮姬排序)", "R1.2 xs Section") ; 注意 Section 选项用法（保存此控件位置并定义一个新控件段）
+AddCheckboxSetting(doroGui, "FailTower", "爬塔摆烂一次（用于完成每日任务）", "R1.2")
+AddCheckboxSetting(doroGui, "CompanyTower", "尽可能地爬企业塔", "R1.2 xs Section")
 AddCheckboxSetting(doroGui, "Interception", "使用对应编队进行异常拦截自动战斗", "R1.2 xs")
 doroGui.Add("DropDownList", "Choose" InterceptionBossToLabel(), ["克拉肯(石)，编队1", "过激派(头)，编队2", "镜像容器(手)，编队3",
     "茵迪维利亚(衣)，编队4", "死神(脚)，编队5"]).OnEvent("Change", ChangeOnInterceptionBoss)
+AddCheckboxSetting(doroGui, "UniversalTower", "尽可能地爬通用塔", "R1.2")
 Tab.UseTab("默认")
-doroGui.Add("Text", , "购买几本代码手册？")
+doroGui.Add("Text", , "购买代码手册数量")
 doroGui.Add("DropDownList", "Choose" NumOfBookToLabel(), [0, 1, 2, 3]).OnEvent("Change", ChangeOnNumOfBook)
 Tab.UseTab()
 doroGui.Add("Button", "Default w80 xm+100", "DORO!").OnEvent("Click", ClickOnDoro)
