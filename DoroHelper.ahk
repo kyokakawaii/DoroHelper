@@ -1226,7 +1226,6 @@ SimulationRoom() {
         }
     }
 }
-
 ;7: 新人竞技场收菜
 Arena() {
     ;进入方舟
@@ -1389,7 +1388,6 @@ RookieArena(times) {
 }
 ;特殊竞技场
 SpecialArena(times) {
-
 }
 ;8: 对前n位nikke进行好感度咨询(可以通过收藏把想要咨询的nikke排到前面)
 NotAllCollection() {
@@ -2478,7 +2476,6 @@ OnePass() { ;执行一次通行证
 }
 ;通用塔
 UniversalTower() {
-
 }
 ; 通用函数，用于切换 g_settings Map 中的设置值
 ToggleSetting(settingKey, guiCtrl, *) {
